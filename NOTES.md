@@ -26,4 +26,22 @@
 
 ### Challenges & Resolutions
 - **RSC Payload Extraction**: The live site dynamically hid adopted puppies on client navigation until hydration; resolved by extracting the full HTML SSR tree for `/gone-home` and parsing all 27 ticket badges.
-- **Tailwind v4 Theme Integration**: Tailwind v4 uses standard `@theme` declarations rather than `tailwind.config.js`; adjusted configuration directly into `globals.css` with CSS variables for seamless font and color resolution.
+- **Turbopack Windows Node 25 Upstream Panic**: Turbopack crashed when loading CSS processors due to a known Node 25 Windows IPC process termination issue. Resolved by installing `@tailwindcss/postcss` with `postcss.config.mjs` and configuring Webpack for clean, stable, fast production builds.
+
+---
+
+## Phase 2: Layout Components
+
+### Objectives
+- Build responsive `SiteHeader` with brand identity and desktop/tablet navigation.
+- Implement animated `MobileMenu` slide-over drawer with the reference's *"where to, friend?"* overlay.
+- Build `SiteFooter` matching exact columns (Home at last, Explore, Say hello, Social pills, Copyright).
+- Build `StickyMobileBar` with one-tap WhatsApp and Phone Call actions for mobile users.
+- Integrate layout components in `RootLayout`.
+
+### Technical Decisions
+1. **Accessibility & Responsive Navigation**:
+   - `MobileMenu` traps focus and disables background scroll while open. Closes automatically on route changes or `Escape` key press.
+   - Sticky header uses `backdrop-blur` with subtle opacity for smooth content scroll beneath.
+2. **Mobile UX**:
+   - Bottom padding added to footer on mobile to ensure content isn't obscured by `StickyMobileBar`.

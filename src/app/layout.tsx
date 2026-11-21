@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Fraunces, Figtree, Shantell_Sans } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { StickyMobileBar } from "@/components/layout/StickyMobileBar";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -27,17 +30,15 @@ export const metadata: Metadata = {
     default: "TeddyPups U.A.E. — Premium teacup puppies in Dubai",
     template: "%s | TeddyPups U.A.E.",
   },
-  description:
-    "Teddy bear and teacup puppies in Dubai. Meet local puppies in our Downtown Dubai showroom or bring home a rare breed imported from trusted breeders.",
-  applicationName: "TeddyPups U.A.E.",
+  description: siteConfig.description,
+  applicationName: siteConfig.name,
   icons: {
     icon: "/brand/logo.png",
     apple: "/brand/logo.png",
   },
   openGraph: {
     title: "TeddyPups U.A.E. — Premium teacup puppies in Dubai",
-    description:
-      "Teddy bear and teacup puppies in Dubai. Meet local puppies in our Downtown Dubai showroom or bring home a rare breed imported from trusted breeders.",
+    description: siteConfig.description,
     url: siteConfig.url,
     siteName: siteConfig.name,
     images: [
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
         url: "/brand/logo.png",
         width: 1200,
         height: 630,
-        alt: "TeddyPups U.A.E.",
+        alt: siteConfig.name,
       },
     ],
     locale: "en_AE",
@@ -64,7 +65,10 @@ export default function RootLayout({
       className={`${fraunces.variable} ${figtree.variable} ${shantell.variable} scroll-smooth antialiased`}
     >
       <body className="min-h-screen bg-milk text-cocoa font-sans flex flex-col selection:bg-honey/30">
-        {children}
+        <SiteHeader />
+        <div className="flex-1 flex flex-col">{children}</div>
+        <SiteFooter />
+        <StickyMobileBar />
       </body>
     </html>
   );
