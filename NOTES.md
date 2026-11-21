@@ -82,3 +82,19 @@
    - For puppies with local video clips (e.g. Max), rendered HTML5 `<video controls playsInline poster={...}>` with local MP4 playback.
 3. **URL Search Parameter State Sync**:
    - Utilized Next.js `useSearchParams` wrapped inside `<Suspense>` on `/puppies` to ensure seamless bookmarking, sharing, and deep-linking (e.g., `/puppies?origin=local`, `/puppies?breed=maltipoo`).
+
+---
+
+## Phase 5: Remaining Pages (`/how-it-works`, `/faq`, `/contact`, `/happy-families`)
+
+### Objectives
+- Implement `/how-it-works` with step-by-step concierge process, Korea import logistics, showroom visit guide, and `#delivery` collection anchor.
+- Implement `/faq` with live search ("sniff out a question"), note counter, full 9-question accordion list, and direct question prompt.
+- Implement `/contact` with interactive letter-style enquiry form, showroom address, hours, and WhatsApp appointment booking.
+- Implement `/happy-families` with client testimonial spotlight and 64-moments photo wall.
+
+### Technical Decisions
+1. **Interactive Client Search in FAQ**:
+   - Developed `FaqClient` allowing instant, zero-latency filtering across questions and answers simultaneously.
+2. **Creative Letter-Style Contact Form**:
+   - Implemented `ContactForm` matching the reference site's conversational letter format, with live state binding and preformatted WhatsApp forward handoff.
