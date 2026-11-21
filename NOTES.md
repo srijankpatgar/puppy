@@ -45,3 +45,22 @@
    - Sticky header uses `backdrop-blur` with subtle opacity for smooth content scroll beneath.
 2. **Mobile UX**:
    - Bottom padding added to footer on mobile to ensure content isn't obscured by `StickyMobileBar`.
+
+---
+
+## Phase 3: Homepage Implementation
+
+### Objectives
+- Implement all 8 distinct sections from `reference/home.md`:
+  1. `HeroSection`: Tagline, headline, CTA buttons, horizontal avatar chip lineup carousel, and Pomeranian hero feature banner.
+  2. `MeetThePups`: 15 authentic puppy cards with availability status indicators and "Meet them all" card.
+  3. `TwoWaysSection`: Showroom visit ("Puppies in Dubai") vs. Concierge import ("Imported for you").
+  4. `PuppyJourney`: 3-step numbered adoption flow plus interactive WhatsApp chat widget simulation with breed selector chips and showroom photo grid.
+  5. `TrustBadges`: 4 key trust pillars (Vet-checked & healthy, Korea to Dubai safely, 24/7 Support, Worldwide Trust).
+  6. `HappyFamiliesSection`: Testimonial quote from Sarah M. in Dubai and 8 client story photo cards.
+  7. `FaqPreviewSection`: Interactive accordion answering top 3 adoption questions with direct link to full FAQ.
+  8. `BottomCtaSection`: Final conversion card with Max's portrait and showroom visit CTAs.
+
+### Technical Decisions
+- Extracted and modularized each section into `src/components/home/` and built reusable `PuppyCard` and `Accordion` components.
+- Maintained 100% adherence to authentic copy, URLs, and image paths from `reference/home.md`.
