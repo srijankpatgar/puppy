@@ -64,3 +64,21 @@
 ### Technical Decisions
 - Extracted and modularized each section into `src/components/home/` and built reusable `PuppyCard` and `Accordion` components.
 - Maintained 100% adherence to authentic copy, URLs, and image paths from `reference/home.md`.
+
+---
+
+## Phase 4: Puppies Pages (`/puppies`, `/puppies/[slug]`, `/gone-home`)
+
+### Objectives
+- Build `/puppies` directory with multi-parameter URL-synced filters (`breed`, `origin`, `gender`, `sort`).
+- Build `/puppies/[slug]` dynamic profile page with media viewer (photos + local video playback), puppy passport health guarantee, and pre-filled WhatsApp inquiry generator.
+- Build `/gone-home` adopted puppies gallery featuring authentic flight-ticket cards.
+
+### Technical Decisions
+1. **Static Pre-rendering (`generateStaticParams`)**:
+   - Pre-generated static pages for all 42 puppies, enabling instant page loads without client-side rendering spinners.
+2. **Interactive Video & Media Gallery**:
+   - Built `PuppyGallery` with an active media viewer and thumbnail carousel strip.
+   - For puppies with local video clips (e.g. Max), rendered HTML5 `<video controls playsInline poster={...}>` with local MP4 playback.
+3. **URL Search Parameter State Sync**:
+   - Utilized Next.js `useSearchParams` wrapped inside `<Suspense>` on `/puppies` to ensure seamless bookmarking, sharing, and deep-linking (e.g., `/puppies?origin=local`, `/puppies?breed=maltipoo`).
