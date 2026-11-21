@@ -35,16 +35,36 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Custom Puppy Paw Cursor Rules */
+/* Custom Brown Dog Paw Cursor Rules */
 @media (hover: hover) and (pointer: fine) {
-  html.has-custom-cursor,
-  html.has-custom-cursor *,
-  html.has-custom-cursor a,
-  html.has-custom-cursor button,
-  html.has-custom-cursor input,
-  html.has-custom-cursor select,
-  html.has-custom-cursor textarea {
-    cursor: none !important;
+  html,
+  body {
+    cursor: url(/cursor/paw.svg) 9 6, auto;
+  }
+  :is(
+    a,
+    button,
+    summary,
+    label[for],
+    [role="button"],
+    [role="tab"],
+    select,
+    input[type="checkbox"],
+    input[type="radio"],
+    input[type="submit"],
+    [data-interactive="true"],
+    .tp-door__link,
+    .btn,
+    .cursor-pointer
+  ) {
+    cursor: url(/cursor/paw-press.svg) 9 6, pointer !important;
+  }
+  :is(
+    input:not([type="checkbox"], [type="radio"], [type="submit"], [type="range"]),
+    textarea,
+    [contenteditable="true"]
+  ) {
+    cursor: text !important;
   }
 }
 
@@ -324,6 +344,46 @@ body {
   }
   50% {
     transform: translate(0, -6px) rotate(-3deg);
+  }
+}
+
+/* Teddy Puppy Character Natural Expressions */
+@keyframes tp-blink-open {
+  0%, 92%, 97%, 100% {
+    opacity: 1;
+  }
+  94.5% {
+    opacity: 0;
+  }
+}
+
+@keyframes tp-blink-shut {
+  0%, 92%, 97%, 100% {
+    opacity: 0;
+  }
+  94.5% {
+    opacity: 1;
+  }
+}
+
+@keyframes tp-ear-twitch {
+  0%, 84%, 100% {
+    transform: rotate(0deg);
+  }
+  87% {
+    transform: rotate(-11deg);
+  }
+  90% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes tp-tail-wag {
+  0% {
+    transform: rotate(-8deg);
+  }
+  100% {
+    transform: rotate(14deg);
   }
 }
 

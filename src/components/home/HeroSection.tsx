@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { MessageCircle } from "lucide-react";
+import { TeddyBuddy } from "@/components/common/TeddyBuddy";
 
 const heroLineup = [
   {
@@ -103,17 +104,24 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Hero Pomeranian Feature Banner */}
-        <div className="mt-10 sm:mt-14 w-full max-w-5xl relative aspect-[16/9] sm:aspect-[21/9] rounded-3xl overflow-hidden shadow-lg border border-cocoa/10">
-          <Image
-            src="/media/3yOfnmoyPooH/81e0c7e00c/b942a5_556841b9a73942e5a9d782a683f3bc68-mv2.jpg"
-            alt="Adorable teacup Pomeranian puppy at TeddyPups Dubai"
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 1200px"
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-cocoa/40 via-transparent to-transparent pointer-events-none" />
+        {/* Hero Pomeranian Feature Banner with Blinking Teddy Peeking Over */}
+        <div className="relative mt-20 sm:mt-24 w-full max-w-5xl">
+          {/* Skin-coloured puppy blinking and peeking over the quilt banner */}
+          <div className="absolute -top-20 sm:-top-28 left-8 sm:left-14 z-20 w-32 sm:w-44 filter drop-shadow-[0_8px_16px_rgba(42,23,14,0.18)]">
+            <TeddyBuddy pose="peek" facing="right" />
+          </div>
+
+          <div className="relative aspect-[16/9] sm:aspect-[21/9] rounded-3xl overflow-hidden shadow-lg border border-cocoa/10">
+            <Image
+              src="/media/3yOfnmoyPooH/81e0c7e00c/b942a5_556841b9a73942e5a9d782a683f3bc68-mv2.jpg"
+              alt="Adorable teacup Pomeranian puppy at TeddyPups Dubai"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 1200px"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-cocoa/40 via-transparent to-transparent pointer-events-none" />
+          </div>
         </div>
       </div>
     </section>

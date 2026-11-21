@@ -15,10 +15,7 @@ interface PawPrint {
 
 export function PuppyCursor() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const cursorRef = useRef<HTMLDivElement | null>(null);
   const [isSupported, setIsSupported] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
 
   useEffect(() => {
     // Only enable on desktop screens with a mouse / fine pointer
@@ -26,7 +23,6 @@ export function PuppyCursor() {
     if (!isFinePointer) return;
 
     setIsSupported(true);
-    document.documentElement.classList.add("has-custom-cursor");
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -51,7 +47,7 @@ export function PuppyCursor() {
     };
     resize();
 
-    // Canvas render loop for fading paw prints
+    // Canvas render loop for fading brown paw prints
     const render = (now: number) => {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -65,10 +61,10 @@ export function PuppyCursor() {
         }
         const fade = age < 600 ? 1 : 1 - (age - 600) / 400;
         ctx.globalAlpha = 0.42 * fade * fade;
-        ctx.setTransform(0.27 * dpr, 0, 0, 0.27 * dpr, p.x * dpr, p.y * dpr);
+        ctx.setTransform(0.26 * dpr, 0, 0, 0.26 * dpr, p.x * dpr, p.y * dpr);
         ctx.rotate(p.angle);
         ctx.translate(-32, -34);
-        ctx.fillStyle = "#c2622b"; // Authentic brand toffee color
+        ctx.fillStyle = "#c2622b"; // Authentic brand warm toffee brown
         ctx.fill(pawPath);
       }
 
@@ -79,23 +75,10 @@ export function PuppyCursor() {
       }
     };
 
-    // Track mouse position and velocity
+    // Track mouse position and drop footsteps as pointer walks
     const onPointerMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
 
-      // Update interactive custom cursor element
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-      }
-
-      // Check if hovering over an interactive element
-      const target = e.target as HTMLElement | null;
-      const isInteractive = Boolean(
-        target?.closest("a, button, input, select, textarea, [role='button'], .tp-door__link, [data-interactive='true']")
-      );
-      setIsHovering(isInteractive);
-
-      // Record steps for paw trail
       if (Number.isNaN(lastX)) {
         lastX = e.clientX;
         lastY = e.clientY;
@@ -106,6 +89,7 @@ export function PuppyCursor() {
       const dy = e.clientY - lastY;
       distAccum += Math.hypot(dx, dy);
 
+      // Stamp a little paw step every 46 pixels of mouse movement
       if (distAccum >= 46) {
         distAccum = 0;
         const angle = Math.atan2(dy, dx) + Math.PI / 2;
@@ -113,13 +97,13 @@ export function PuppyCursor() {
         const offset = 7 * stepSign;
 
         prints.push({
-          x: e.clientX + Math.cos(angle) * offset + 14,
-          y: e.clientY + Math.sin(angle) * offset + 16,
+          x: e.clientX + Math.cos(angle) * offset + 12,
+          y: e.clientY + Math.sin(angle) * offset + 14,
           angle,
           born: performance.now(),
         });
 
-        if (prints.length > 14) prints.shift();
+        if (prints.length > 16) prints.shift();
 
         if (!isLoopActive) {
           isLoopActive = true;
@@ -131,69 +115,23 @@ export function PuppyCursor() {
       lastY = e.clientY;
     };
 
-    const onMouseDown = () => setIsClicking(true);
-    const onMouseUp = () => setIsClicking(false);
-
     window.addEventListener("pointermove", onPointerMove, { passive: true });
-    window.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mouseup", onMouseUp);
     window.addEventListener("resize", resize);
 
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mouseup", onMouseUp);
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animId);
-      document.documentElement.classList.remove("has-custom-cursor");
     };
   }, []);
 
   if (!isSupported) return null;
 
   return (
-    <>
-      {/* Background canvas for footsteps */}
-      <canvas
-        ref={canvasRef}
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-[70] size-full"
-      />
-
-      {/* Real-time custom puppy paw pointer */}
-      <div
-        ref={cursorRef}
-        aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-[80] -ml-4 -mt-4 will-change-transform transition-opacity duration-200"
-      >
-        <div
-          className={`size-9 flex items-center justify-center transition-transform duration-150 ease-out drop-shadow-[0_2px_8px_rgba(42,23,14,0.35)] ${
-            isClicking
-              ? "scale-85 rotate-[-8deg]"
-              : isHovering
-              ? "scale-125 rotate-[12deg]"
-              : "scale-100 rotate-0"
-          }`}
-        >
-          <svg
-            viewBox="0 0 64 64"
-            className="size-full"
-            fill={isHovering ? "#c2622b" : "#2a170e"}
-          >
-            {/* Paw Base & Pad */}
-            <path
-              d={PAW_PATH_D}
-              className="transition-colors duration-200"
-            />
-            {/* Inner highlights on paw beans */}
-            <circle cx="32" cy="44" r="3" fill="#f2be6b" opacity="0.65" />
-            <circle cx="15" cy="30" r="1.5" fill="#f2be6b" opacity="0.65" />
-            <circle cx="24" cy="17" r="1.5" fill="#f2be6b" opacity="0.65" />
-            <circle cx="40" cy="17" r="1.5" fill="#f2be6b" opacity="0.65" />
-            <circle cx="49" cy="30" r="1.5" fill="#f2be6b" opacity="0.65" />
-          </svg>
-        </div>
-      </div>
-    </>
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-[70] size-full"
+    />
   );
 }

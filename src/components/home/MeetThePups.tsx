@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Puppy } from "@/types/puppy";
 import { PuppyDoorCard } from "@/components/puppies/PuppyDoorCard";
+import { TeddyBuddy } from "@/components/common/TeddyBuddy";
 import puppiesData from "@/data/puppies.json";
 import { ArrowRight, Sparkles, DoorOpen, DoorClosed } from "lucide-react";
 
@@ -20,7 +21,7 @@ export function MeetThePups() {
     <section className="py-16 sm:py-24 bg-milk/50 border-t border-cocoa/10">
       <div className="gutter">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16 relative">
           <div>
             <div className="flex items-center gap-2 font-scrawl text-toffee text-base mb-1">
               <Sparkles className="size-4" />
@@ -33,6 +34,11 @@ export function MeetThePups() {
               Real puppies, real photos, looking for their families right now.
               Hover or click each door to peek inside!
             </p>
+          </div>
+
+          {/* Skin-coloured Teddy puppy greeting visitors at the doors */}
+          <div className="hidden lg:block absolute -top-16 right-0 w-28 sm:w-32 filter drop-shadow-[0_6px_12px_rgba(42,23,14,0.15)] pointer-events-auto">
+            <TeddyBuddy pose="sit" facing="left" />
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
