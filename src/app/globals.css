@@ -26,12 +26,26 @@
 :root {
   --background: #fffdf8;
   --foreground: #2a170e;
+  --door-open: 78deg;
 }
 
 body {
   background-color: var(--color-milk);
   color: var(--color-cocoa);
   font-family: var(--font-sans);
+}
+
+/* Custom Puppy Paw Cursor Rules */
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor *,
+  html.has-custom-cursor a,
+  html.has-custom-cursor button,
+  html.has-custom-cursor input,
+  html.has-custom-cursor select,
+  html.has-custom-cursor textarea {
+    cursor: none !important;
+  }
 }
 
 /* Custom utility classes */
@@ -55,6 +69,261 @@ body {
   .gutter {
     padding-left: 2.5rem;
     padding-right: 2.5rem;
+  }
+}
+
+/* =========================================================================
+   3D ARCHED PUPPY DOORS GALLERY (.tp-doors & .tp-door)
+   ========================================================================= */
+
+.tp-doors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(14rem, 42vw), 1fr));
+  gap: 3.5rem 1.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 1024px) {
+  .tp-doors {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4rem 2.25rem;
+  }
+}
+
+.tp-door {
+  list-style: none;
+  position: relative;
+}
+
+.tp-door__link {
+  border-radius: 1rem;
+  text-decoration: none;
+  display: block;
+}
+
+.tp-door__plate {
+  text-align: center;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.tp-door__name {
+  font-size: clamp(1.45rem, 2vw, 2rem);
+  line-height: 1.1;
+  display: block;
+}
+
+.tp-door__meta {
+  color: var(--color-cocoa-soft);
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: block;
+}
+
+/* Arched Door Frame */
+.tp-door__frame {
+  aspect-ratio: 4 / 5.2;
+  border: 3px solid var(--color-cocoa);
+  background: #3b2215;
+  border-bottom: 0;
+  border-radius: 999px 999px 0 0;
+  display: block;
+  position: relative;
+}
+
+/* Door Threshold Base Step */
+.tp-door__frame:after {
+  content: "";
+  border: 3px solid var(--color-cocoa);
+  background: #dc9a52;
+  border-radius: 0.35rem;
+  height: 0.65rem;
+  position: absolute;
+  bottom: -0.65rem;
+  left: -0.55rem;
+  right: -0.55rem;
+}
+
+/* Doorway Perspective Container */
+.tp-door__way {
+  perspective: 700px;
+  perspective-origin: 0;
+  border-radius: 999px 999px 0 0;
+  position: absolute;
+  inset: -3px -3px 0;
+  overflow: hidden;
+}
+
+/* Interior Room with Puppy Photo */
+.tp-door__room {
+  border-radius: inherit;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.tp-door__room img {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 3D Swinging Door Leaf */
+.tp-door__leaf {
+  border: 3px solid var(--color-cocoa);
+  background: repeating-linear-gradient(
+      90deg,
+      transparent 0 calc(25% - 1.5px),
+      rgba(42, 23, 14, 0.18) calc(25% - 1.5px) 25%
+    ),
+    var(--door, #a24a1a);
+  transform-origin: left center;
+  border-bottom: 0;
+  border-radius: 999px 999px 0 0;
+  transition: transform 0.95s cubic-bezier(0.3, 1.3, 0.45, 1) 40ms;
+  position: absolute;
+  inset: 0;
+  transform: rotateY(0deg);
+}
+
+/* Inner Decorative Door Bevel */
+.tp-door__leaf:before {
+  content: "";
+  border: 2px solid rgba(255, 253, 248, 0.28);
+  border-radius: 999px 999px 0.5rem 0.5rem;
+  position: absolute;
+  inset: 10% 12% 8%;
+}
+
+/* Paw-Shaped Peephole */
+.tp-door__peephole {
+  color: rgba(255, 253, 248, 0.55);
+  width: 24%;
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Golden Brass Doorknob */
+.tp-door__knob {
+  aspect-ratio: 1;
+  border: 2.5px solid var(--color-cocoa);
+  background: var(--color-honey);
+  border-radius: 50%;
+  width: 0.9rem;
+  position: absolute;
+  top: 56%;
+  right: 11%;
+}
+
+/* Pinned Available Status Tag */
+.tp-door__tag {
+  z-index: 2;
+  border: 2px solid var(--color-cocoa);
+  background: var(--color-milk);
+  color: var(--color-cocoa);
+  border-radius: 999px;
+  padding: 0.1rem 0.65rem 0.15rem;
+  position: absolute;
+  top: 14%;
+  right: -0.75rem;
+  transform: rotate(7deg);
+  box-shadow: 2px 3px rgba(42, 23, 14, 0.2);
+}
+
+/* 3D Door Open State */
+.tp-door[data-open="true"] .tp-door__leaf,
+.tp-door__link:hover .tp-door__leaf,
+.tp-door__link:focus-visible .tp-door__leaf,
+.tp-door__leaf.door-is-open {
+  transform: rotateY(var(--door-open, 78deg)) !important;
+}
+
+.tp-door[data-open="true"] .tp-door__room img,
+.tp-door__link:hover .tp-door__room img,
+.tp-door__link:focus-visible .tp-door__room img {
+  transform: scale(1.05);
+}
+
+/* 16th "Meet Them All" Card */
+.tp-door--all {
+  align-self: stretch;
+  display: flex;
+}
+
+.tp-door--all .tp-door__link {
+  width: 100%;
+}
+
+.tp-door__frame--all {
+  background: rgba(255, 255, 255, 0.4);
+  border: 3px dashed rgba(42, 23, 14, 0.25);
+  height: 100%;
+}
+
+.tp-door--all .tp-door__frame:after {
+  display: none;
+}
+
+/* =========================================================================
+   ANIMATION KEYFRAMES
+   ========================================================================= */
+
+@keyframes tp-door-open {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(var(--door-open, 78deg));
+  }
+}
+
+@keyframes tp-house-open {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(-105deg);
+  }
+}
+
+@keyframes tp-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(4deg);
+  }
+}
+
+@keyframes tp-breathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.015);
+  }
+}
+
+@keyframes tp-twinkle {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes tp-plane-bob {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(0, -6px) rotate(-3deg);
   }
 }
 

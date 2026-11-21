@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { StickyMobileBar } from "@/components/layout/StickyMobileBar";
 import { FloatingWhatsApp } from "@/components/common/FloatingWhatsApp";
+import { PuppyCursor } from "@/components/common/PuppyCursor";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -66,6 +67,7 @@ export default function RootLayout({
       className={`${fraunces.variable} ${figtree.variable} ${shantell.variable} scroll-smooth antialiased`}
     >
       <body className="min-h-screen bg-milk text-cocoa font-sans flex flex-col selection:bg-honey/30">
+        <PuppyCursor />
         <SiteHeader />
         <div className="flex-1 flex flex-col">{children}</div>
         <SiteFooter />

@@ -114,3 +114,29 @@
    - Replicated the authentic missing-puppy flyer design with torn paper pull-tabs at the bottom.
 2. **Device-Specific WhatsApp CTAs**:
    - Handled cleanly between mobile viewports (`StickyMobileBar` at bottom) and desktop viewports (`FloatingWhatsApp` in corner with tooltip hover).
+
+
+---
+
+## Phase 9: Custom Puppy Paw Pointer & 3D Interactive Door Showcase
+
+### Objectives
+- Replicate the exact puppy paw footprint mouse pointer and real-time fading canvas footsteps trail from `https://puppy.instabizweb.com/`.
+- Replicate the 3D arched door showcase cards (`PuppyDoorCard`) in "Meet the pups" with vertical wood grain paneling, golden knob, and paw peephole.
+- Implement master door controls ("Open all doors" / "Close all doors") and the grand 3D double arched showroom door entrance portal (`ShowroomDoorPortal`).
+- Replicate all authentic CSS keyframes (`tp-door-open`, `tp-house-open`, `tp-float`, `tp-breathe`, `tp-plane-bob`, `tp-twinkle`).
+
+### Technical Decisions
+1. **Interactive Custom Puppy Paw Pointer (`PuppyCursor.tsx`)**:
+   - Extracted authentic SVG path (`M32 30.5c-7.6...`) for puppy footprint and toe beans.
+   - Built dual-layer cursor engine:
+     - Real-time DOM paw pointer with dynamic tilt velocity, excited bounce on hover (`scale-125`), and squish on click (`scale-85`).
+     - Zero-overhead HTML5 `<canvas>` rendering engine (`PawTrailCanvas`) stamping alternating left/right paw prints every 46px of mouse travel with quadratic alpha decay over 1,000ms in brand toffee (`#c2622b`).
+     - Automatically disabled on mobile/touch screens via `(hover: hover) and (pointer: fine)` media query.
+2. **3D Arched Puppy Doors (`PuppyDoorCard.tsx`)**:
+   - Replicated exact 3D door frame, perspective (700px), threshold step, wood grain paneling, brass knob, and paw-shaped peephole.
+   - Smooth 3D swinging open (`rotateY(78deg)`) on hover or click.
+   - Added Master Door Controls on the section header to toggle all doors open or closed at once.
+3. **Grand Showroom 3D Double-Door Portal (`ShowroomDoorPortal.tsx`)**:
+   - 3D double arched doorway with luxury chocolate wood paneling, raised moldings, golden brass pull handles, and central TeddyPups crest.
+   - Interactive open/close controls swinging doors in perspective (`rotateY(-112deg)` and `rotateY(112deg)`) with warm showroom lighting spilling out.
