@@ -231,6 +231,28 @@ export function TeddyBuddy({
     }
   }, [pose]);
 
+  // Rotate friendly sayings
+  useEffect(() => {
+    if (!showBubble) return;
+    const sayings = [
+      "woof! welcome!",
+      "every puppy is family",
+      "meet our puppies!",
+      "all vet-checked!",
+      "sniff around!",
+      "ready to cuddle?",
+    ];
+    let idx = 0;
+    const timer = setTimeout(() => {
+      const interval = setInterval(() => {
+        idx = (idx + 1) % sayings.length;
+        setSpeech(sayings[idx]);
+      }, 4500);
+      return () => clearInterval(interval);
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, [showBubble]);
+
   // Main 60fps Spring & Physics Render Loop
   useEffect(() => {
     let animId = 0;
