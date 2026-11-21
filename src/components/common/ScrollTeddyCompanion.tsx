@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TeddyBuddy } from "./TeddyBuddy";
 
 export function ScrollTeddyCompanion() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [currentSection, setCurrentSection] = useState("welcome");
   const [isMinimized, setIsMinimized] = useState(false);
+  const [companionPose, setCompanionPose] = useState<"sit" | "walk">("sit");
+  const [facingDir, setFacingDir] = useState<"left" | "right">("right");
+
+  const lastScrollY = useRef(0);
+  const scrollStopTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +20,25 @@ export function ScrollTeddyCompanion() {
       const progress = totalScroll > 0 ? (current / totalScroll) * 100 : 0;
       setScrollProgress(progress);
 
+      // Determine facing direction and trigger walking stride
+      const dy = current - lastScrollY.current;
+      if (Math.abs(dy) > 1.5) {
+        setCompanionPose("walk");
+        if (dy > 0) {
+          setFacingDir("right");
+        } else {
+          setFacingDir("left");
+        }
+      }
+      lastScrollY.current = current;
+
+      // Debounce returning to sit pose when scrolling pauses
+      if (scrollStopTimer.current) clearTimeout(scrollStopTimer.current);
+      scrollStopTimer.current = setTimeout(() => {
+        setCompanionPose("sit");
+      }, 350);
+
+      // Section tracker
       if (progress < 15) {
         setCurrentSection("welcome");
       } else if (progress < 35) {
@@ -31,7 +55,10 @@ export function ScrollTeddyCompanion() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollStopTimer.current) clearTimeout(scrollStopTimer.current);
+    };
   }, []);
 
   const getSectionMessage = () => {
@@ -72,15 +99,19 @@ export function ScrollTeddyCompanion() {
         {!isMinimized ? (
           <div className="relative flex flex-col items-center">
             {/* Scroll Context Bubble */}
-            <div className="mb-1 rounded-2xl border-2 border-cocoa bg-milk px-3 py-1 text-xs font-scrawl font-bold text-cocoa shadow-md animate-in fade-in zoom-in-95 duration-200">
+            <div className="mb-1 rounded-2xl border-2 border-cocoa bg-milk px-3.5 py-1 text-xs font-scrawl font-bold text-cocoa shadow-md animate-in fade-in zoom-in-95 duration-200">
               <span>{getSectionMessage()}</span>
               {/* Little down arrow */}
               <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 size-2 rotate-45 border-b-2 border-r-2 border-cocoa bg-milk" />
             </div>
 
-            {/* Teddy Character */}
+            {/* Teddy Character with Walking Stride & Sitting Poses */}
             <div className="w-24 sm:w-28 filter drop-shadow-[0_8px_16px_rgba(42,23,14,0.18)]">
-              <TeddyBuddy pose="sit" facing="right" showBubble={false} />
+              <TeddyBuddy
+                pose={companionPose}
+                facing={facingDir}
+                showBubble={false}
+              />
             </div>
 
             {/* Scroll Track Progress Bar Under Paws */}
