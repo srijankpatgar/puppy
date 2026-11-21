@@ -5,6 +5,7 @@ import { siteConfig } from "@/config/site";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { StickyMobileBar } from "@/components/layout/StickyMobileBar";
+import { FloatingWhatsApp } from "@/components/common/FloatingWhatsApp";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -69,6 +70,7 @@ export default function RootLayout({
         <div className="flex-1 flex flex-col">{children}</div>
         <SiteFooter />
         <StickyMobileBar />
+        <FloatingWhatsApp />
       </body>
     </html>
   );

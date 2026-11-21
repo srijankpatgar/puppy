@@ -98,3 +98,19 @@
    - Developed `FaqClient` allowing instant, zero-latency filtering across questions and answers simultaneously.
 2. **Creative Letter-Style Contact Form**:
    - Implemented `ContactForm` matching the reference site's conversational letter format, with live state binding and preformatted WhatsApp forward handoff.
+
+---
+
+## Phase 6 & 7: Forms, 404, Polish & Pixel Fidelity
+
+### Objectives
+- Create custom 404 missing puppy flyer page (`src/app/not-found.tsx`) with tear-off pull tabs back to main sections.
+- Create desktop floating WhatsApp concierge trigger (`src/components/common/FloatingWhatsApp.tsx`).
+- Full responsive audit across mobile, tablet, and desktop viewports.
+- Production build validation with zero errors.
+
+### Technical Decisions
+1. **Missing Puppy Flyer 404 Aesthetic**:
+   - Replicated the authentic missing-puppy flyer design with torn paper pull-tabs at the bottom.
+2. **Device-Specific WhatsApp CTAs**:
+   - Handled cleanly between mobile viewports (`StickyMobileBar` at bottom) and desktop viewports (`FloatingWhatsApp` in corner with tooltip hover).
