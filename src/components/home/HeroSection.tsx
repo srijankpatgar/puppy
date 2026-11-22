@@ -120,7 +120,7 @@ export function HeroSection({
   }, []);
 
   return (
-    <section className="relative overflow-hidden min-h-[calc(100svh-5rem)] flex flex-col justify-between items-center bg-[#FBF3E4] text-center select-none pt-4 sm:pt-7 md:pt-9">
+    <section className="relative overflow-hidden min-h-[80svh] sm:min-h-[calc(100svh-5rem)] flex flex-col justify-between items-center bg-[#FBF3E4] text-center select-none pt-2 sm:pt-7 md:pt-9">
       {/* Subtle Quilt Diamond Texture & Golden Peach Glow */}
       <div
         className="absolute inset-0 pointer-events-none opacity-45"
@@ -157,13 +157,13 @@ export function HeroSection({
         </h1>
 
         {/* Subtitle paragraph */}
-        <p className="mt-3 sm:mt-4 max-w-2xl text-xs sm:text-base lg:text-lg text-[#5A2E14] leading-relaxed font-medium animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <p className="mt-2 sm:mt-4 max-w-2xl text-xs sm:text-base lg:text-lg text-[#5A2E14] leading-relaxed font-medium animate-in fade-in slide-in-from-bottom-4 duration-500">
           Meet your new best friend in our Dubai showroom, or order a rare
           miniature breed from trusted breeders worldwide.
         </p>
 
         {/* Action Buttons: "View available puppies" (rust brown) + "Enquire on WhatsApp" (cream outline) */}
-        <div className="mt-5 sm:mt-6 flex flex-row items-center justify-center gap-2.5 sm:gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
+        <div className="mt-3 sm:mt-6 flex flex-row items-center justify-center gap-2.5 sm:gap-4 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
           <Link
             href="/puppies"
             className="inline-flex items-center justify-center rounded-full bg-[#A8481C] text-[#FFF6E5] font-extrabold text-xs sm:text-sm uppercase tracking-wider px-5 sm:px-8 py-2.5 sm:py-3.5 border-2 border-[#2A1710] shadow-[0_4px_0_#2A1710] hover:bg-[#8E3F15] active:translate-y-0.5 active:shadow-[0_1px_0_#2A1710] transition-all cursor-pointer"
@@ -182,7 +182,7 @@ export function HeroSection({
       </div>
 
       {/* 2. BOTTOM ARCH WINDOWS ROW & SCALLOPED CREAM WALL */}
-      <div className="w-full relative mt-auto pt-6 sm:pt-8 flex flex-col items-center justify-end overflow-visible">
+      <div className="w-full relative mt-auto pt-3 sm:pt-8 flex flex-col items-center justify-end overflow-visible">
         {/* ROW OF ARCHES + MASCOT IN THE CENTER */}
         <div className="flex items-end justify-center gap-2 sm:gap-3.5 md:gap-4.5 lg:gap-5.5 px-2 sm:px-4 z-10 relative">
           {/* LEFT 3 ARCHES */}

@@ -378,29 +378,23 @@ body {
 
 /* Mascot SVG natural eye blinking */
 .mascot-eye {
-  transform-box: fill-box;
-  transform-origin: center;
   animation: blink 4.5s ease-in-out infinite;
 }
 
 .mascot-eye-left {
-  transform-origin: 92px 88px;
   animation-delay: 0s;
 }
 
 .mascot-eye-right {
-  transform-origin: 128px 88px;
   animation-delay: 0.08s;
 }
 
 @keyframes blink {
   0%, 92%, 100% {
-    transform: scaleY(1);
     opacity: 1;
   }
   95% {
-    transform: scaleY(0.12);
-    opacity: 0.7;
+    opacity: 0;
   }
 }
 
