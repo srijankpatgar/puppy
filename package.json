@@ -7,6 +7,9 @@
     "build": "next build --webpack",
     "start": "next start"
   },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.5",
     "clsx": "^2.1.1",
