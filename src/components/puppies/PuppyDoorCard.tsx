@@ -1,17 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Puppy } from "@/types/puppy";
 import { Video } from "lucide-react";
 import { TeddyMascot } from "@/components/common/TeddyMascot";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 // Warm wooden door leaf tones from reference
 const DOOR_LEAF_COLORS = [
@@ -35,9 +29,6 @@ export function PuppyDoorCard({
   priority = false,
   onNavigate,
 }: PuppyDoorCardProps) {
-  const cardRef = useRef<HTMLLIElement>(null);
-  const leafRef = useRef<HTMLSpanElement>(null);
-  const photoRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
 
   const doorColor = DOOR_LEAF_COLORS[index % DOOR_LEAF_COLORS.length];
@@ -48,52 +39,8 @@ export function PuppyDoorCard({
     ? `${puppy.breed}, ${puppy.genderLabel.toLowerCase()}, ${puppy.age}`
     : `${puppy.genderLabel.toLowerCase()}, ${puppy.age}`;
 
-  // As each card enters: leaf swings open (0 to -70deg, spring ease, 60ms stagger) while photo scales 1.08 to 1
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mediaQuery.matches) {
-      if (leafRef.current) leafRef.current.style.transform = "rotateY(-70deg)";
-      return;
-    }
-
-    if (!cardRef.current || !leafRef.current || !photoRef.current) return;
-
-    const delay = (index % 4) * 0.06; // 60ms stagger
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: cardRef.current,
-        start: "top 88%",
-        toggleActions: "play none none reverse",
-      },
-    });
-
-    tl.fromTo(
-      leafRef.current,
-      { rotateY: 0 },
-      {
-        rotateY: -70,
-        duration: 0.9,
-        delay,
-        ease: "back.out(1.6)",
-      },
-      0
-    ).fromTo(
-      photoRef.current,
-      { scale: 1.08 },
-      {
-        scale: 1,
-        duration: 0.8,
-        delay,
-        ease: "power2.out",
-      },
-      0
-    );
-  }, [index]);
-
   return (
     <li
-      ref={cardRef}
       data-mascot-slot={index === 0 ? "doors-bottom-left" : undefined}
       className="tp-door group relative list-none select-none"
       onMouseEnter={() => setIsHovered(true)}
@@ -103,8 +50,8 @@ export function PuppyDoorCard({
       <Link
         href={`/puppies/${puppy.slug}`}
         onClick={onNavigate}
-        className={`tp-door__link block rounded-2xl focus:outline-none transition-transform duration-200 ${
-          isHovered ? "-translate-y-1.5" : ""
+        className={`tp-door__link block rounded-2xl focus:outline-none transition-transform duration-300 ${
+          isHovered ? "-translate-y-2" : ""
         }`}
       >
         {/* Puppy Plate: Name in bold serif + small detail line below */}
@@ -123,45 +70,49 @@ export function PuppyDoorCard({
           </span>
         </span>
 
-        {/* Arched Door Frame with Thick Brown Base */}
-        <span className="tp-door__frame block relative aspect-[4/5.2] rounded-t-full border-3 border-[#2A1710] bg-[#1F110A] shadow-md group-hover:shadow-xl transition-all [perspective:900px]">
+        {/* Arched Door Frame with 3D Perspective */}
+        <span className="tp-door__frame block relative aspect-[4/5.2] rounded-t-full border-3 border-[#2A1710] bg-[#1F110A] shadow-md group-hover:shadow-2xl transition-all [perspective:900px]">
           {/* Puppy Photo inside arched room */}
-          <span
-            ref={photoRef}
-            className="tp-door__room absolute inset-0 size-full overflow-hidden rounded-t-full"
-          >
+          <span className="tp-door__room absolute inset-0 size-full overflow-hidden rounded-t-full">
             <Image
               src={puppy.cover.url}
               alt={puppy.cover.alt || `${displayTitle}, ${puppy.breed}`}
               fill
               priority={priority}
               sizes="(min-width: 1024px) 16rem, (min-width: 640px) 40vw, 85vw"
-              className="object-cover transition-transform duration-500 ease-out"
+              className={`object-cover transition-transform duration-500 ease-out ${
+                isHovered ? "scale-108" : "scale-100"
+              }`}
             />
             <span className="absolute inset-0 bg-gradient-to-t from-[#2A1710]/40 via-transparent to-transparent pointer-events-none" />
           </span>
 
-          {/* Open Door Leaf on the Left Side (hinged on left edge) */}
-          <span aria-hidden="true" className="tp-door__way absolute inset-0 rounded-t-full overflow-hidden pointer-events-none">
+          {/* 3D Swinging Door Leaf - CLOSED by default, OPENS ON CURSOR HOVER */}
+          <span
+            aria-hidden="true"
+            className="tp-door__way absolute inset-0 rounded-t-full overflow-hidden pointer-events-none"
+          >
             <span
-              ref={leafRef}
-              className="tp-door__leaf absolute inset-y-0 left-0 w-full origin-left rounded-t-full border-r-2 border-[#2A1710] shadow-2xl transition-transform duration-300"
+              className="tp-door__leaf absolute inset-y-0 left-0 w-full origin-left rounded-t-full border-r-3 border-[#2A1710] shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.85,0.25,1)]"
               style={{
                 backgroundColor: doorColor,
-                transform: isHovered ? "rotateY(-78deg)" : "rotateY(-70deg)",
+                transform: isHovered ? "rotateY(-78deg)" : "rotateY(0deg)",
                 backgroundImage:
-                  "repeating-linear-gradient(90deg, transparent 0, transparent 22px, rgba(42,23,16,0.3) 22px, rgba(42,23,16,0.35) 24px), linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.25) 100%)",
+                  "repeating-linear-gradient(90deg, transparent 0, transparent 24px, rgba(42,23,16,0.28) 24px, rgba(42,23,16,0.32) 26px), linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 40%, rgba(0,0,0,0.22) 100%)",
               }}
             >
-              {/* Engraved Paw Print on door leaf */}
-              <span className="absolute left-3.5 top-1/3 -translate-y-1/2 opacity-30 text-[#FFF6E5]">
-                <svg className="size-5 fill-current" viewBox="0 0 64 64">
+              {/* Inner Decorative Bevel */}
+              <span className="absolute inset-[8%_10%_6%] rounded-t-full rounded-b-md border-2 border-white/25 pointer-events-none" />
+
+              {/* Engraved Subtle Paw Print on upper-left of door leaf */}
+              <span className="absolute left-4 top-1/3 -translate-y-1/2 opacity-35 text-[#FFF6E5]">
+                <svg className="size-6 fill-current" viewBox="0 0 64 64">
                   <path d="M32 30.5c-7.6 0-15.6 8.3-15.6 15.5 0 5.4 4.2 8.3 9.2 8.3 2.6 0 4.5-1.1 6.4-1.1s3.8 1.1 6.4 1.1c5 0 9.2-2.9 9.2-8.3 0-7.2-8-15.5-15.6-15.5zM19.28 26.71C21.07 30.08 20.42 33.92 17.84 35.29C15.25 36.67 11.71 35.05 9.92 31.69C8.13 28.32 8.78 24.48 11.36 23.11C13.95 21.73 17.49 23.35 19.28 26.71ZM29.62 15.64C30.32 19.62 28.46 23.26 25.47 23.79C22.48 24.32 19.48 21.53 18.78 17.56C18.08 13.58 19.94 9.94 22.93 9.41C25.92 8.88 28.92 11.67 29.62 15.64ZM45.22 17.56C44.52 21.53 41.52 24.32 38.53 23.79C35.54 23.26 33.68 19.62 34.38 15.64C35.08 11.67 38.08 8.88 41.07 9.41C44.06 9.94 45.92 13.58 45.22 17.56ZM54.08 31.69C52.29 35.05 48.75 36.67 46.16 35.29C43.58 33.92 42.93 30.08 44.72 26.71C46.51 23.35 50.05 21.73 52.64 23.11C55.22 24.48 55.87 28.32 54.08 31.69Z" />
                 </svg>
               </span>
 
-              {/* Golden Brass Knob */}
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 size-3.5 rounded-full bg-gradient-to-br from-[#FFE4A0] via-[#F8D08C] to-[#C27D2E] border border-[#2A1710] shadow-md" />
+              {/* Golden Brass Oval Knob */}
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-4.5 rounded-full bg-gradient-to-br from-[#FFE4A0] via-[#F8D08C] to-[#C27D2E] border-2 border-[#2A1710] shadow-md" />
             </span>
           </span>
 
@@ -177,7 +128,7 @@ export function PuppyDoorCard({
 
           {/* Mascot peeking at bottom-left corner of first door (matches reference video) */}
           {index === 0 && (
-            <div className="absolute -bottom-7 -left-5 z-30 pointer-events-none w-20 sm:w-26">
+            <div className="absolute -bottom-8 -left-5 z-30 pointer-events-none w-20 sm:w-26">
               <TeddyMascot pose="head-peek" />
             </div>
           )}

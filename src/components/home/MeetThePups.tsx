@@ -19,8 +19,16 @@ export function MeetThePups({ onDoorClick }: MeetThePupsProps) {
     .slice(0, 15);
 
   return (
-    <section className="relative py-16 sm:py-24 bg-quilt-cream text-[#2A1710] overflow-hidden select-none">
-      <CloudDivider position="top" fill="#FFF6E5" className="absolute top-0 inset-x-0" />
+    <section className="relative py-16 sm:py-24 bg-[#FBF3E4] text-[#2A1710] overflow-hidden select-none">
+      {/* Subtle Quilt Diamond Pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-45"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(45deg, transparent, transparent 38px, rgba(168,72,28,0.035) 38px, rgba(168,72,28,0.035) 40px), repeating-linear-gradient(-45deg, transparent, transparent 38px, rgba(168,72,28,0.035) 38px, rgba(168,72,28,0.035) 40px)",
+        }}
+      />
+      <CloudDivider position="top" fill="#FBF3E4" className="absolute top-0 inset-x-0" />
 
       <div className="gutter relative z-10 pt-6">
         {/* Section Header */}

@@ -15,10 +15,6 @@ const FOOTPRINT_STEPS = [
 const PAW_PATH_D =
   "M32 30.5c-7.6 0-15.6 8.3-15.6 15.5 0 5.4 4.2 8.3 9.2 8.3 2.6 0 4.5-1.1 6.4-1.1s3.8 1.1 6.4 1.1c5 0 9.2-2.9 9.2-8.3 0-7.2-8-15.5-15.6-15.5zM19.28 26.71C21.07 30.08 20.42 33.92 17.84 35.29C15.25 36.67 11.71 35.05 9.92 31.69C8.13 28.32 8.78 24.48 11.36 23.11C13.95 21.73 17.49 23.35 19.28 26.71ZM29.62 15.64C30.32 19.62 28.46 23.26 25.47 23.79C22.48 24.32 19.48 21.53 18.78 17.56C18.08 13.58 19.94 9.94 22.93 9.41C25.92 8.88 28.92 11.67 29.62 15.64ZM45.22 17.56C44.52 21.53 41.52 24.32 38.53 23.79C35.54 23.26 33.68 19.62 34.38 15.64C35.08 11.67 38.08 8.88 41.07 9.41C44.06 9.94 45.92 13.58 45.22 17.56ZM54.08 31.69C52.29 35.05 48.75 36.67 46.16 35.29C43.58 33.92 42.93 30.08 44.72 26.71C46.51 23.35 50.05 21.73 52.64 23.11C55.22 24.48 55.87 28.32 54.08 31.69Z";
 
-// Running legs paths
-const LEG_NEAR = "M-12 -14 C-12 4 -12 16 -12 25 C-12 32 -7 34 0 34 C9 34 13 31 13 25 C13 16 12 4 12 -14Z";
-const LEG_FAR = "M-11 -14 C-11 4 -12 18 -12 27 C-12 34 -7 36 0 36 C9 36 13 33 13 27 C13 18 11 4 11 -14Z";
-
 export function RouteCurtain() {
   const pathname = usePathname();
   const [curtainState, setCurtainState] = useState<"intro" | "lifting" | "idle" | "covering" | "covered">("intro");
@@ -28,11 +24,11 @@ export function RouteCurtain() {
   useEffect(() => {
     const liftTimer = setTimeout(() => {
       setCurtainState("lifting");
-    }, 1150);
+    }, 1200);
 
     const idleTimer = setTimeout(() => {
       setCurtainState("idle");
-    }, 1650);
+    }, 1750);
 
     return () => {
       clearTimeout(liftTimer);
@@ -40,7 +36,7 @@ export function RouteCurtain() {
     };
   }, []);
 
-  // Listen for route changes & door clicks to trigger wipe in then out
+  // Listen for route changes to trigger wipe in then out
   useEffect(() => {
     if (pathname === prevPathname.current) return;
     prevPathname.current = pathname;
@@ -123,89 +119,115 @@ export function RouteCurtain() {
                   animationDelay: `${step.delay}s`,
                 }}
               >
-                <path d={PAW_PATH_D} />
+                <path d={PAW_PATH_D} fill="#A8481C" opacity="0.65" />
               </svg>
             ))}
           </div>
 
-          {/* Running Puppy Character with SHAKING TAIL */}
+          {/* Running Puppy Character with PROPER TROTTING LEGS and SHAKING TAIL */}
           <div className="tp-curtain__runner">
             <svg
-              viewBox="0 0 300 240"
+              viewBox="0 0 300 250"
               className="tp-runner w-full h-auto"
               style={{ overflow: "visible" }}
             >
               {/* Ground Shadow */}
               <ellipse
                 cx="150"
-                cy="230"
-                rx="86"
-                ry="7"
+                cy="234"
+                rx="88"
+                ry="8"
                 fill="#2A1710"
-                opacity="0.12"
+                opacity="0.14"
                 className="tp-runner__shadow"
               />
 
               <g className="tp-runner__dog">
-                {/* Far Back Leg */}
-                <path
-                  d={LEG_FAR}
-                  fill="#785838"
-                  stroke="#2A1710"
-                  strokeWidth="3.4"
+                {/* 1. Far Back Leg (Darker shadow tone, pivoting at hip x=105, y=176) */}
+                <g
                   className="tp-runner__leg tp-runner__leg--bf"
-                  style={{ transformOrigin: "94px 192px" }}
-                />
-
-                {/* Far Front Leg */}
-                <path
-                  d={LEG_FAR}
-                  fill="#785838"
-                  stroke="#2A1710"
-                  strokeWidth="3.4"
-                  className="tp-runner__leg tp-runner__leg--ff"
-                  style={{ transformOrigin: "168px 192px" }}
-                />
-
-                {/* Shaking Tail */}
-                <g className="tp-runner__tail" style={{ transformOrigin: "84px 150px" }}>
+                  style={{ transformOrigin: "105px 176px" }}
+                >
                   <path
-                    d="M86 152 C80 146 76 140 74 136"
+                    d="M 97 176 C 96 188 95 200 93 210 C 91 216 95 222 104 222 C 112 222 116 216 115 210 C 114 200 113 188 112 176 Z"
+                    fill="#D98A36"
+                    stroke="#2A1710"
+                    strokeWidth="3.4"
+                    strokeLinejoin="round"
+                  />
+                  <ellipse cx="104" cy="220" rx="8" ry="4" fill="#C27320" />
+                </g>
+
+                {/* 2. Far Front Leg (Darker shadow tone, pivoting at shoulder x=172, y=176) */}
+                <g
+                  className="tp-runner__leg tp-runner__leg--ff"
+                  style={{ transformOrigin: "172px 176px" }}
+                >
+                  <path
+                    d="M 164 176 C 163 188 162 200 160 210 C 158 216 162 222 171 222 C 179 222 183 216 182 210 C 181 200 180 188 179 176 Z"
+                    fill="#D98A36"
+                    stroke="#2A1710"
+                    strokeWidth="3.4"
+                    strokeLinejoin="round"
+                  />
+                  <ellipse cx="171" cy="220" rx="8" ry="4" fill="#C27320" />
+                </g>
+
+                {/* 3. Shaking Tail */}
+                <g className="tp-runner__tail" style={{ transformOrigin: "86px 152px" }}>
+                  <path
+                    d="M86 152 C80 144 75 138 72 134"
                     stroke="#2A1710"
                     strokeWidth="6"
                     strokeLinecap="round"
                     fill="none"
                   />
-                  <ellipse cx="70" cy="126" rx="17" ry="16" fill="#F8D08C" stroke="#2A1710" strokeWidth="3.4" />
+                  <ellipse cx="68" cy="124" rx="18" ry="17" fill="#F8D08C" stroke="#2A1710" strokeWidth="3.4" />
+                  <circle cx="62" cy="118" r="9" fill="#F8D08C" />
+                  <circle cx="74" cy="118" r="9" fill="#F8D08C" />
                 </g>
 
-                {/* Body */}
+                {/* 4. Golden Fluffy Body */}
                 <g className="tp-runner__body">
                   <ellipse cx="140" cy="170" rx="64" ry="36" fill="#F8D08C" stroke="#2A1710" strokeWidth="3.4" />
                   <ellipse cx="192" cy="166" rx="30" ry="32" fill="#F8D08C" stroke="#2A1710" strokeWidth="3.4" />
                 </g>
 
-                {/* Near Back Leg */}
-                <path
-                  d={LEG_NEAR}
-                  fill="#F8D08C"
-                  stroke="#2A1710"
-                  strokeWidth="3.4"
+                {/* 5. Near Back Leg (Golden fur, attached to body at hip x=118, y=180) */}
+                <g
                   className="tp-runner__leg tp-runner__leg--bn"
-                  style={{ transformOrigin: "110px 194px" }}
-                />
+                  style={{ transformOrigin: "118px 180px" }}
+                >
+                  <path
+                    d="M 110 180 C 109 192 108 204 106 214 C 104 220 108 226 117 226 C 125 226 129 220 128 214 C 127 204 126 192 125 180 Z"
+                    fill="#F8D08C"
+                    stroke="#2A1710"
+                    strokeWidth="3.4"
+                    strokeLinejoin="round"
+                  />
+                  <ellipse cx="117" cy="223" rx="8.5" ry="4.5" fill="#FFE3AF" />
+                  <line x1="114" y1="219" x2="114" y2="225" stroke="#2A1710" strokeWidth="2" strokeLinecap="round" />
+                  <line x1="120" y1="219" x2="120" y2="225" stroke="#2A1710" strokeWidth="2" strokeLinecap="round" />
+                </g>
 
-                {/* Near Front Leg */}
-                <path
-                  d={LEG_NEAR}
-                  fill="#F8D08C"
-                  stroke="#2A1710"
-                  strokeWidth="3.4"
+                {/* 6. Near Front Leg (Golden fur, attached to body at shoulder x=186, y=180) */}
+                <g
                   className="tp-runner__leg tp-runner__leg--fn"
-                  style={{ transformOrigin: "186px 194px" }}
-                />
+                  style={{ transformOrigin: "186px 180px" }}
+                >
+                  <path
+                    d="M 178 180 C 177 192 176 204 174 214 C 172 220 176 226 185 226 C 193 226 197 220 196 214 C 195 204 194 192 193 180 Z"
+                    fill="#F8D08C"
+                    stroke="#2A1710"
+                    strokeWidth="3.4"
+                    strokeLinejoin="round"
+                  />
+                  <ellipse cx="185" cy="223" rx="8.5" ry="4.5" fill="#FFE3AF" />
+                  <line x1="182" y1="219" x2="182" y2="225" stroke="#2A1710" strokeWidth="2" strokeLinecap="round" />
+                  <line x1="188" y1="219" x2="188" y2="225" stroke="#2A1710" strokeWidth="2" strokeLinecap="round" />
+                </g>
 
-                {/* Bobbing Head */}
+                {/* 7. Bobbing Head */}
                 <g className="tp-runner__head">
                   {/* Collar & Golden Tag */}
                   <path d="M178 146 Q212 162 246 146 L246 154 Q212 170 178 154 Z" fill="#A8481C" stroke="#2A1710" strokeWidth="3" />
@@ -237,8 +259,8 @@ export function RouteCurtain() {
           </div>
 
           {/* Note Under Runner: Handwritten "hey, just a min..." + "every puppy is family" */}
-          <div className="tp-curtain__note text-center space-y-1">
-            <p className="font-scrawl text-sm sm:text-base text-[#A8481C] font-semibold tracking-wide">
+          <div className="tp-curtain__note text-center space-y-1 mt-4">
+            <p className="font-scrawl text-sm sm:text-base text-[#A8481C] font-bold tracking-wide">
               hey, just a min...
             </p>
             <p className="font-scrawl text-lg sm:text-2xl text-[#5A2E14] font-bold">
@@ -254,7 +276,35 @@ export function RouteCurtain() {
           height="40"
           preserveAspectRatio="none"
         >
-          <rect width="100%" height="40" fill="url(#tp-curtain-scallop-top)" />
+          <defs>
+            <pattern
+              id="tp-curtain-scallop-bottom"
+              width="76"
+              height="40"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M0 0V13A38 25 0 0 0 76 13V0Z"
+                fill="#FFF6E5"
+              />
+              <path
+                d="M0 13A38 25 0 0 0 76 13"
+                fill="none"
+                stroke="#2A1710"
+                strokeWidth="3"
+              />
+              <path
+                d="M11 7A27 19 0 0 0 65 7"
+                fill="none"
+                stroke="#2A1710"
+                strokeWidth="1.6"
+                strokeDasharray="3.5 5.5"
+                strokeLinecap="round"
+                opacity="0.4"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="40" fill="url(#tp-curtain-scallop-bottom)" />
         </svg>
       </div>
     </div>

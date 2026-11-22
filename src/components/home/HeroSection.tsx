@@ -66,8 +66,17 @@ export function HeroSection({
   }, [activeArchIndex, onSelectArch]);
 
   return (
-    <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 bg-quilt-cream text-center select-none">
-      <div className="gutter flex flex-col items-center">
+    <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 bg-[#FBF3E4] text-center select-none">
+      {/* Subtle Quilt Diamond Texture & Golden Peach Glow */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-50"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 50% 30%, rgba(248,208,140,0.3) 0%, transparent 70%), repeating-linear-gradient(45deg, transparent, transparent 38px, rgba(168,72,28,0.04) 38px, rgba(168,72,28,0.04) 40px), repeating-linear-gradient(-45deg, transparent, transparent 38px, rgba(168,72,28,0.04) 38px, rgba(168,72,28,0.04) 40px)",
+        }}
+      />
+
+      <div className="gutter relative z-10 flex flex-col items-center">
         {/* Handwritten Tagline */}
         <div className="inline-block font-scrawl text-lg sm:text-xl text-[#A8481C] tracking-wide mb-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
           every puppy is family
@@ -108,7 +117,7 @@ export function HeroSection({
           {/* Invisible anchor for mascot slot in center */}
           <div
             data-mascot-slot="hero-center"
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-20 pointer-events-none"
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-24 pointer-events-none"
           />
 
           {/* Arches Strip (Tall arches, edge-to-edge, thin dark outlines, real photos) */}
@@ -167,8 +176,8 @@ export function HeroSection({
               })}
             </div>
 
-            {/* Center Mascot Peeking Over Scalloped Cloud Edge (matches reference video) */}
-            <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-24 sm:w-32">
+            {/* BIG PROMINENT Center Mascot Peeking Over Scalloped Cloud Edge (Matches Reference Video 1:1) */}
+            <div className="absolute -bottom-8 sm:-bottom-10 md:-bottom-12 left-1/2 -translate-x-1/2 z-30 pointer-events-none w-36 sm:w-48 md:w-56 lg:w-64">
               <TeddyMascot pose="head-peek" />
             </div>
           </div>

@@ -26,7 +26,7 @@
 :root {
   --background: #fffdf8;
   --foreground: #2a170e;
-  --door-open: 78deg;
+  --door-open: -78deg;
 }
 
 body {
@@ -36,14 +36,30 @@ body {
 }
 
 /* Custom Brown Dog Paw Cursor Rules */
-@media (hover: hover) and (pointer: fine) {
-  html,
-  body,
-  *,
-  *::before,
-  *::after {
-    cursor: none !important;
-  }
+html,
+body {
+  cursor: url('/cursor/paw.svg') 16 16, auto;
+}
+
+button,
+a,
+[role="button"],
+input,
+select,
+textarea,
+.cursor-pointer,
+.tp-door,
+.tp-door__link {
+  cursor: url('/cursor/paw-press.svg') 16 16, pointer !important;
+}
+
+/* When rich custom cursor component is mounted on desktop, hide browser cursor */
+html.has-custom-cursor,
+html.has-custom-cursor body,
+html.has-custom-cursor *,
+html.has-custom-cursor *::before,
+html.has-custom-cursor *::after {
+  cursor: none !important;
 }
 
 @keyframes tailWag {
@@ -251,16 +267,18 @@ body {
 
 /* 3D Door Open State */
 .tp-door[data-open="true"] .tp-door__leaf,
+.tp-door:hover .tp-door__leaf,
 .tp-door__link:hover .tp-door__leaf,
 .tp-door__link:focus-visible .tp-door__leaf,
 .tp-door__leaf.door-is-open {
-  transform: rotateY(var(--door-open, 78deg)) !important;
+  transform: rotateY(var(--door-open, -78deg)) !important;
 }
 
 .tp-door[data-open="true"] .tp-door__room img,
+.tp-door:hover .tp-door__room img,
 .tp-door__link:hover .tp-door__room img,
 .tp-door__link:focus-visible .tp-door__room img {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 /* 16th "Meet Them All" Card */
