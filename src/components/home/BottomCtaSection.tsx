@@ -97,19 +97,20 @@ export function BottomCtaSection() {
             </svg>
           </div>
 
-          {/* Arched Wooden Door Frame */}
+          {/* Arched Wooden Door Frame — single wrapper, fixed alignment */}
           <div className="relative w-56 sm:w-68 aspect-[3/4.8] rounded-t-full border-4 border-[#1A0D08] bg-[#1A0D08] overflow-hidden shadow-2xl [perspective:1000px]">
-            {/* Doorway Interior: Standing Poodle Puppy with Warm Light Spilling Out */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#FFE4A0] via-[#F8D08C] to-[#E4A352] flex flex-col items-center justify-end p-2 overflow-hidden">
-              <div className="relative w-36 sm:w-44 h-48 sm:h-54">
-                <Image
-                  src="/media/xeMJCapr5vcU/e618c653b2/b942a5_14376a216177484dbbb27995d0f6aeb7-mv2.jpg"
-                  alt="Standing teacup puppy in doorway"
-                  fill
-                  sizes="200px"
-                  className="object-cover rounded-t-full"
-                />
-              </div>
+            {/* Warm gradient backdrop + puppy photo filling the arch */}
+            <div className="absolute inset-0 rounded-t-full overflow-hidden bg-gradient-to-b from-[#FFE4A0] via-[#F8D08C] to-[#E4A352]">
+              {/* Dog photo: absolutely fills the arch, face-centered */}
+              <Image
+                src="/media/xeMJCapr5vcU/e618c653b2/b942a5_14376a216177484dbbb27995d0f6aeb7-mv2.jpg"
+                alt="Standing teacup puppy in doorway"
+                fill
+                sizes="(max-width: 640px) 224px, 272px"
+                className="object-cover object-[center_20%] rounded-t-full"
+              />
+              {/* Warm gradient overlay so bottom blends */}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#E4A352]/60 pointer-events-none" />
             </div>
 
             {/* Left Door Leaf (Hinged on left, opens 0.4s to rotateY -75deg) */}

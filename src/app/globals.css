@@ -35,22 +35,28 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Custom Brown Dog Paw Cursor Rules */
-html,
-body {
-  cursor: url('/cursor/paw.svg') 16 16, auto;
-}
+/* ---- Dog Paw Cursor (mouse-only devices) ---- */
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body {
+    cursor: url('/cursors/paw.svg') 16 16, auto;
+  }
 
-button,
-a,
-[role="button"],
-input,
-select,
-textarea,
-.cursor-pointer,
-.tp-door,
-.tp-door__link {
-  cursor: url('/cursor/paw-press.svg') 16 16, pointer !important;
+  a,
+  button,
+  [role="button"],
+  .cursor-pointer,
+  .tp-door,
+  .tp-door__link {
+    cursor: url('/cursors/paw-hover.svg') 16 16, pointer;
+  }
+
+  /* Form fields keep the normal text cursor */
+  input,
+  select,
+  textarea {
+    cursor: text;
+  }
 }
 
 /* When rich custom cursor component is mounted on desktop, hide browser cursor */

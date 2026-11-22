@@ -19,7 +19,7 @@ export function MeetThePups({ onDoorClick }: MeetThePupsProps) {
     .slice(0, 15);
 
   return (
-    <section className="relative py-16 sm:py-24 bg-[#FBF3E4] text-[#2A1710] overflow-hidden select-none">
+    <section className="relative pt-10 pb-16 sm:pt-14 sm:pb-24 -mt-14 sm:-mt-20 bg-[#FBF3E4] text-[#2A1710] overflow-hidden select-none">
       {/* Subtle Quilt Diamond Pattern */}
       <div
         className="absolute inset-0 pointer-events-none opacity-45"

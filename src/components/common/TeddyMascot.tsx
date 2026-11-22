@@ -20,20 +20,31 @@ export function TeddyMascot({
   const [isBlinking, setIsBlinking] = useState(false);
   const [earWiggle, setEarWiggle] = useState(false);
 
-  // Natural blinking & ear wiggle loops matching reference
+  // Natural blinking: random 3-6 s interval, 150 ms blink.
+  // Respects prefers-reduced-motion (no blinking at all).
   useEffect(() => {
-    const blinkTimer = setInterval(() => {
-      setIsBlinking(true);
-      setTimeout(() => setIsBlinking(false), 180);
-    }, 2900);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) return; // Skip blink for reduced-motion users
 
+    let blinkTimeout: ReturnType<typeof setTimeout>;
+    const scheduleBlink = () => {
+      const delay = 3000 + Math.random() * 3000; // 3-6 s
+      blinkTimeout = setTimeout(() => {
+        setIsBlinking(true);
+        setTimeout(() => setIsBlinking(false), 150); // 150 ms blink
+        scheduleBlink(); // schedule next
+      }, delay);
+    };
+    scheduleBlink();
+
+    // Ear wiggle every ~4.2 s (unchanged)
     const earTimer = setInterval(() => {
       setEarWiggle(true);
       setTimeout(() => setEarWiggle(false), 550);
     }, 4200);
 
     return () => {
-      clearInterval(blinkTimer);
+      clearTimeout(blinkTimeout);
       clearInterval(earTimer);
     };
   }, []);

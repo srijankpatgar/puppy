@@ -66,7 +66,7 @@ export function HeroSection({
   }, [activeArchIndex, onSelectArch]);
 
   return (
-    <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 bg-[#FBF3E4] text-center select-none">
+    <section className="relative overflow-hidden pt-12 pb-6 sm:pt-16 sm:pb-10 min-h-[calc(100svh-5rem)] bg-[#FBF3E4] text-center select-none">
       {/* Subtle Quilt Diamond Texture & Golden Peach Glow */}
       <div
         className="absolute inset-0 pointer-events-none opacity-50"
