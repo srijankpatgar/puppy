@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -12,6 +12,10 @@ import { Menu, MessageCircle } from "lucide-react";
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const handleCloseMenu = useCallback(() => {
+    setMobileMenuOpen(false);
+  }, []);
 
   return (
     <>
@@ -76,8 +80,9 @@ export function SiteHeader() {
             {/* "Menu" Pill Button with thick shadow */}
             <button
               type="button"
-              onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden inline-flex items-center gap-1.5 rounded-full bg-[#FFFDF8] border-2 border-[#2A1710] px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-[#2A1710] shadow-[0_3px_0_#2A1710] active:translate-y-0.5 active:shadow-[0_1px_0_#2A1710] transition-all cursor-pointer"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-expanded={mobileMenuOpen}
+              className="lg:hidden inline-flex items-center gap-1.5 rounded-full bg-[#FFFDF8] border-2 border-[#2A1710] px-4 py-2 text-xs font-extrabold uppercase tracking-wider text-[#2A1710] shadow-[0_3px_0_#2A1710] active:translate-y-0.5 active:shadow-[0_1px_0_#2A1710] transition-all cursor-pointer z-30"
               aria-label="Open navigation menu"
             >
               <Menu className="size-4" />
@@ -113,7 +118,7 @@ export function SiteHeader() {
       {/* Slide-over Mobile Navigation Drawer */}
       <MobileMenu
         isOpen={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
+        onClose={handleCloseMenu}
       />
     </>
   );

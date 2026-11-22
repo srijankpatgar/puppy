@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/config/site";
@@ -14,6 +14,7 @@ interface MobileMenuProps {
 
 export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const pathname = usePathname();
+  const prevPathname = useRef(pathname);
 
   // Close menu on ESC key
   useEffect(() => {
@@ -32,43 +33,45 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     };
   }, [isOpen, onClose]);
 
-  // Close menu on route change
+  // Close menu ONLY when route changes to a new page (not on initial mount)
   useEffect(() => {
-    onClose();
+    if (prevPathname.current !== pathname) {
+      prevPathname.current = pathname;
+      onClose();
+    }
   }, [pathname, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 lg:hidden">
+    <div className="fixed inset-0 z-[100] lg:hidden">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-cocoa/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-[#2A1710]/50 backdrop-blur-sm transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Drawer panel */}
-      <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-milk shadow-2xl flex flex-col justify-between p-6 sm:p-8 animate-in slide-in-from-right duration-300">
+      <div className="fixed inset-y-0 right-0 w-full max-w-xs sm:max-w-sm bg-[#FFFDF8] border-l-3 border-[#2A1710] shadow-2xl flex flex-col justify-between p-6 sm:p-8 animate-in slide-in-from-right duration-300 z-10">
         <div>
           {/* Header */}
-          <div className="flex items-center justify-between pb-6 border-b border-cocoa/10">
-            <span className="font-scrawl text-2xl text-toffee">
+          <div className="flex items-center justify-between pb-5 border-b-2 border-[#2A1710]/15">
+            <span className="font-scrawl text-2xl text-[#A8481C] font-bold">
               where to, friend?
             </span>
             <button
               type="button"
               onClick={onClose}
-              className="inline-flex items-center gap-1 text-sm font-semibold text-cocoa-soft hover:text-cocoa focus:outline-none p-1.5 rounded-full hover:bg-cocoa/5"
-              aria-label="Close menu"
+              className="inline-flex items-center justify-center size-9 rounded-full bg-[#FFF6E5] border-2 border-[#2A1710] text-[#2A1710] shadow-[0_2px_0_#2A1710] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+              aria-label="Close navigation menu"
             >
-              <span>Close</span>
               <X className="size-5" />
             </button>
           </div>
 
           {/* Navigation Links */}
-          <nav className="mt-8 flex flex-col space-y-4">
+          <nav className="mt-6 flex flex-col space-y-2">
             {siteConfig.nav.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -76,13 +79,14 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                   key={item.href}
                   href={item.href}
                   onClick={onClose}
-                  className={`text-xl font-display transition-colors py-1 ${
+                  className={`text-lg sm:text-xl font-display font-extrabold px-3 py-2.5 rounded-xl transition-all flex items-center justify-between ${
                     isActive
-                      ? "text-toffee font-bold translate-x-1"
-                      : "text-cocoa hover:text-toffee"
+                      ? "bg-[#FFF6E5] text-[#A8481C] border border-[#2A1710]/20 translate-x-1"
+                      : "text-[#2A1710] hover:text-[#A8481C] hover:bg-[#FFF6E5]/60"
                   }`}
                 >
-                  {item.label}
+                  <span>{item.label}</span>
+                  {isActive && <span className="text-sm">🐾</span>}
                 </Link>
               );
             })}
@@ -90,12 +94,12 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </div>
 
         {/* Bottom Contact & Action */}
-        <div className="pt-8 border-t border-cocoa/10 space-y-4">
+        <div className="pt-6 border-t-2 border-[#2A1710]/15 space-y-3.5">
           <a
             href={getWhatsAppUrl()}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full rounded-full bg-honey py-3 text-sm font-bold uppercase tracking-wider text-cocoa shadow hover:bg-honey-soft transition-colors"
+            className="flex items-center justify-center gap-2 w-full rounded-full bg-[#25D366] py-3 text-xs sm:text-sm font-black uppercase tracking-wider text-white border-2 border-[#1E4E36] shadow-[0_3px_0_#1E4E36] hover:brightness-105 active:translate-y-0.5 active:shadow-[0_1px_0_#1E4E36] transition-all"
           >
             <MessageCircle className="size-4" />
             <span>WhatsApp us</span>
@@ -103,13 +107,13 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
           <a
             href={`tel:${siteConfig.contact.phoneTel}`}
-            className="flex items-center justify-center gap-2 text-sm font-semibold text-cocoa-soft hover:text-cocoa transition-colors"
+            className="flex items-center justify-center gap-2 text-xs sm:text-sm font-bold text-[#5A2E14] hover:text-[#A8481C] transition-colors py-1"
           >
             <Phone className="size-4" />
             <span>{siteConfig.contact.phone}</span>
           </a>
 
-          <div className="text-center font-scrawl text-xs text-cocoa/60 pt-2">
+          <div className="text-center font-scrawl text-xs text-[#5A2E14]/70 pt-1">
             {siteConfig.tagline}
           </div>
         </div>
