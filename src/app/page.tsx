@@ -1,41 +1,37 @@
 import { HeroSection } from "@/components/home/HeroSection";
 import { MeetThePups } from "@/components/home/MeetThePups";
-import { TwoWaysSection } from "@/components/home/TwoWaysSection";
-import { ShowroomDoorPortal } from "@/components/home/ShowroomDoorPortal";
+import { ImportedPlaneSection } from "@/components/home/ImportedPlaneSection";
+import { ShowroomSection } from "@/components/home/ShowroomSection";
 import { PuppyJourney } from "@/components/home/PuppyJourney";
-import { TrustBadges } from "@/components/home/TrustBadges";
 import { HappyFamiliesSection } from "@/components/home/HappyFamiliesSection";
 import { FaqPreviewSection } from "@/components/home/FaqPreviewSection";
 import { BottomCtaSection } from "@/components/home/BottomCtaSection";
 
 export default function HomePage() {
   return (
-    <main className="flex-1 flex flex-col">
-      {/* 1. Hero with Puppy Lineup Carousel & Banner */}
+    <main className="flex-1 flex flex-col overflow-x-hidden">
+      {/* 1. Hero with Arch Photo Strip, Half Mascot, & Scroll Runner */}
       <HeroSection />
 
-      {/* 2. Meet the Pups (15 authentic 3D door puppy cards + Meet them all) */}
+      {/* 2. Available Puppies (Wooden 3D Door Cards) */}
       <MeetThePups />
 
-      {/* 3. Two ways to meet your puppy (Showroom vs Imported) */}
-      <TwoWaysSection />
+      {/* 3. Imported For You (Korea to Dubai GSAP MotionPath Plane) */}
+      <ImportedPlaneSection />
 
-      {/* 4. Interactive Grand Showroom Double-Door Portal Showcase */}
-      <ShowroomDoorPortal />
+      {/* 4. Two Ways to Meet Your Puppy (Striped Showroom Booth + Skyline + 4 Trust Points) */}
+      <ShowroomSection />
 
-      {/* 5. Your puppy journey (3 steps + interactive WhatsApp chat widget) */}
+      {/* 5. Your Puppy Journey (3-Step Pop + Big Double Doors Open on Scroll) */}
       <PuppyJourney />
 
-      {/* 6. Why families trust TeddyPups (4 trust pillars) */}
-      <TrustBadges />
-
-      {/* 7. Happy families & puppies (Featured testimonial + 8 photo stories) */}
+      {/* 6. Happy Families (Polaroids Tilt & Settle Bounce) */}
       <HappyFamiliesSection />
 
-      {/* 8. Questions, answered (Interactive FAQ preview) */}
+      {/* 7. FAQ Preview (Accordion + Mascot Running Across Bottom) */}
       <FaqPreviewSection />
 
-      {/* 9. Ready to meet your new best friend? (Final CTA) */}
+      {/* 8. Night "Welcome Home" Final CTA (Dark Chocolate + Lantern + Moon + Light Spill) */}
       <BottomCtaSection />
     </main>
   );

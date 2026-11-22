@@ -412,8 +412,8 @@ body {
 .tp-curtain__blanket {
   background: repeating-linear-gradient(45deg, transparent 0 46px, rgba(42, 23, 14, 0.07) 46px 48px),
     repeating-linear-gradient(-45deg, transparent 0 46px, rgba(42, 23, 14, 0.07) 46px 48px),
-    radial-gradient(circle at 50% 46%, var(--color-milk) 0, transparent 60%),
-    var(--color-honey-soft);
+    radial-gradient(circle at 50% 46%, #FFF6E5 0, transparent 60%),
+    #FFF6E5;
   will-change: transform;
   place-items: center;
   display: grid;
@@ -642,3 +642,254 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #c8beaa;
 }
+
+/* =========================================================================
+   WARM BOUTIQUE PALETTE & DIAMOND PATTERNS (REFERENCE FIDELITY)
+   ========================================================================= */
+
+.bg-quilt-cream {
+  background-color: #FFF6E5;
+  background-image: 
+    radial-gradient(rgba(168, 72, 28, 0.07) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(168, 72, 28, 0.07) 1.5px, #FFF6E5 1.5px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+.bg-quilt-caramel {
+  background-color: #F8D08C;
+  background-image: 
+    radial-gradient(rgba(90, 46, 20, 0.09) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(90, 46, 20, 0.09) 1.5px, #F8D08C 1.5px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+.bg-chocolate {
+  background-color: #2A1710;
+}
+
+/* Chunky pill buttons with thick bottom shadows */
+.btn-chunky {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: #F8D08C;
+  color: #2A1710;
+  font-weight: 800;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.85rem 2rem;
+  border: 2px solid #5A2E14;
+  box-shadow: 0 4px 0 #5A2E14;
+  transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-chunky:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #5A2E14;
+  background-color: #fce2a8;
+}
+
+.btn-chunky:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #5A2E14;
+}
+
+.btn-chunky-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: #FFF6E5;
+  color: #2A1710;
+  font-weight: 800;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.85rem 1.85rem;
+  border: 2px solid #5A2E14;
+  box-shadow: 0 4px 0 #5A2E14;
+  transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-chunky-outline:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #5A2E14;
+  background-color: #fffaf0;
+  color: #A8481C;
+}
+
+.btn-chunky-outline:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #5A2E14;
+}
+
+.btn-chunky-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: #F8D08C;
+  color: #2A1710;
+  font-weight: 800;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.85rem 2.25rem;
+  border: 2px solid #1A0D08;
+  box-shadow: 0 4px 0 #1A0D08;
+  transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-chunky-dark:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #1A0D08;
+  background-color: #fde8b8;
+}
+
+.btn-chunky-dark:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #1A0D08;
+}
+
+/* Authentic Wooden Arched Door Leaf Details */
+.tp-door__leaf-wood {
+  background: 
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent calc(25% - 2px),
+      rgba(42, 23, 16, 0.25) calc(25% - 2px),
+      rgba(42, 23, 16, 0.35) 25%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%, rgba(0, 0, 0, 0.2) 100%),
+    var(--door, #A8481C);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.35);
+}
+
+/* Door Wooden Panels */
+.tp-door__leaf-wood::after {
+  content: "";
+  position: absolute;
+  inset: 12% 14% 10%;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px 999px 6px 6px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+/* Wooden Signboard hanging swing */
+@keyframes tp-signboard-swing {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(2deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-2deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.tp-signboard-swing {
+  transform-origin: top center;
+  animation: tp-signboard-swing 4s ease-in-out infinite;
+}
+
+/* Lantern flicker */
+@keyframes tp-lantern-flicker {
+  0%, 100% {
+    opacity: 0.95;
+    filter: drop-shadow(0 0 16px rgba(248, 208, 140, 0.8));
+  }
+  25% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 10px rgba(248, 208, 140, 0.6));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 22px rgba(248, 208, 140, 0.95));
+  }
+  75% {
+    opacity: 0.88;
+    filter: drop-shadow(0 0 14px rgba(248, 208, 140, 0.7));
+  }
+}
+
+.tp-lantern-glow {
+  animation: tp-lantern-flicker 2.5s ease-in-out infinite;
+}
+
+/* Stars twinkling */
+@keyframes tp-star-twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.tp-star {
+  animation: tp-star-twinkle 3s ease-in-out infinite;
+}
+
+/* Wicker basket bobbing */
+@keyframes tp-basket-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+.tp-basket-bob {
+  animation: tp-basket-bob 3.2s ease-in-out infinite;
+}
+
+@keyframes tp-basket-ear {
+  0%, 85%, 100% {
+    transform: rotate(0deg);
+  }
+  90% {
+    transform: rotate(-8deg);
+  }
+  95% {
+    transform: rotate(7deg);
+  }
+}
+
+.tp-basket-ear {
+  transform-origin: 20px 20px;
+  animation: tp-basket-ear 4s ease-in-out infinite;
+}
+
+@keyframes tp-basket-blink {
+  0%, 94%, 98%, 100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+
+.tp-basket-blink {
+  transform-origin: center;
+  animation: tp-basket-blink 4.2s ease-in-out infinite;
+}
+

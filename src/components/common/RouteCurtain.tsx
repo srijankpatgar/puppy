@@ -231,7 +231,14 @@ export function RouteCurtain() {
           </div>
 
           {/* Note Under Runner */}
-          <p className="tp-curtain__note font-scrawl">hey, just a min…</p>
+          <div className="tp-curtain__note text-center">
+            <p className="font-scrawl text-lg sm:text-2xl text-[#5A2E14] font-bold">
+              hey, just a min…
+            </p>
+            <p className="font-scrawl text-xs sm:text-sm text-[#A8481C] font-semibold -mt-1 tracking-wide">
+              every puppy is family
+            </p>
+          </div>
         </div>
 
         {/* Scalloped bottom edge */}
