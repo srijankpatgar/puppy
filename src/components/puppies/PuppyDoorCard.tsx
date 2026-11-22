@@ -1,66 +1,117 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Puppy } from "@/types/puppy";
 import { Video } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-// Distinct warm rich wooden door tones matching the reference
-const WOOD_DOOR_TONES = [
-  "#a24a1a", // Deep toffee cedar
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
+// Warm wooden door leaf tones from reference
+const DOOR_LEAF_COLORS = [
+  "#5A2E14", // Dark brown mahogany
+  "#8E3F15", // Rich terracotta walnut
+  "#A8481C", // Deep toffee cedar
   "#785838", // Cocoa oak
-  "#8e3f15", // Terracotta walnut
-  "#b2733f", // Warm golden teak
-  "#c2622b", // Russet chestnut
-  "#6a3c20", // Espresso mahogany
-  "#965028", // Amber oak
+  "#B2733F", // Golden teak
 ];
 
 interface PuppyDoorCardProps {
   puppy: Puppy;
-  forcedOpen?: boolean;
-  priority?: boolean;
   index?: number;
+  priority?: boolean;
+  onNavigate?: () => void;
 }
 
 export function PuppyDoorCard({
   puppy,
-  forcedOpen = false,
-  priority = false,
   index = 0,
+  priority = false,
+  onNavigate,
 }: PuppyDoorCardProps) {
-  const [localOpen, setLocalOpen] = useState(false);
+  const cardRef = useRef<HTMLLIElement>(null);
+  const leafRef = useRef<HTMLSpanElement>(null);
+  const photoRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
-  // If forcedOpen is provided, use it; otherwise use local hover/click state
-  const isDoorOpen = forcedOpen || localOpen;
-  const doorColor = WOOD_DOOR_TONES[index % WOOD_DOOR_TONES.length];
+  const doorColor = DOOR_LEAF_COLORS[index % DOOR_LEAF_COLORS.length];
   const hasVideo = puppy.media?.some((m) => m.kind === "video");
+
+  // As each card enters: leaf swings open (0 to -70deg, spring ease, 60ms stagger) while photo scales 1.08 to 1
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mediaQuery.matches) {
+      if (leafRef.current) leafRef.current.style.transform = "rotateY(-70deg)";
+      return;
+    }
+
+    if (!cardRef.current || !leafRef.current || !photoRef.current) return;
+
+    const delay = (index % 4) * 0.06; // 60ms stagger
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: cardRef.current,
+        start: "top 88%",
+        toggleActions: "play none none reverse",
+      },
+    });
+
+    tl.fromTo(
+      leafRef.current,
+      { rotateY: 0 },
+      {
+        rotateY: -70,
+        duration: 0.9,
+        delay,
+        ease: "back.out(1.6)",
+      },
+      0
+    ).fromTo(
+      photoRef.current,
+      { scale: 1.08 },
+      {
+        scale: 1,
+        duration: 0.8,
+        delay,
+        ease: "power2.out",
+      },
+      0
+    );
+  }, [index]);
 
   return (
     <li
-      className="tp-door group"
-      data-open={isDoorOpen ? "true" : "false"}
-      onMouseEnter={() => setLocalOpen(true)}
-      onMouseLeave={() => setLocalOpen(false)}
-      onTouchStart={() => setLocalOpen((prev) => !prev)}
+      ref={cardRef}
+      data-mascot-slot={index === 0 ? "doors-bottom-left" : undefined}
+      className="tp-door group relative list-none select-none"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={() => setIsHovered((prev) => !prev)}
     >
       <Link
         href={`/puppies/${puppy.slug}`}
-        className="tp-door__link focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f2be6b]"
-        style={{ "--door": doorColor } as React.CSSProperties}
+        onClick={onNavigate}
+        className={`tp-door__link block rounded-2xl focus:outline-none transition-transform duration-200 ${
+          isHovered ? "-translate-y-1.5" : ""
+        }`}
       >
-        {/* Puppy Plate: Chunky Serif Name & Details */}
-        <span className="tp-door__plate">
-          <span className="font-display font-bold text-xl sm:text-2xl tp-door__name text-[#2A1710] transition-colors group-hover:text-[#A8481C]">
+        {/* Puppy Plate: Name in bold serif + small detail line below */}
+        <span className="tp-door__plate block text-center mb-2.5">
+          <span className="font-display font-extrabold text-xl sm:text-2xl text-[#2A1710] group-hover:text-[#A8481C] transition-colors block">
             {puppy.name}
           </span>
-          <span className="tp-door__meta flex items-center justify-center gap-1.5 text-[#5A2E14]/80 text-xs sm:text-sm font-medium">
+          <span className="tp-door__meta flex items-center justify-center gap-1.5 text-[#5A2E14]/80 text-xs sm:text-sm font-semibold mt-0.5">
             <span>
               {puppy.breed}, {puppy.genderLabel.toLowerCase()}, {puppy.age}
             </span>
             {hasVideo && (
-              <span className="inline-flex items-center gap-0.5 text-[#A8481C] font-semibold">
+              <span className="inline-flex items-center gap-0.5 text-[#A8481C] font-bold">
                 <Video className="size-3.5" />
                 <span className="text-[11px]">video</span>
               </span>
@@ -68,74 +119,50 @@ export function PuppyDoorCard({
           </span>
         </span>
 
-        {/* 3D Arched Door Frame */}
-        <span className="tp-door__frame shadow-md group-hover:shadow-xl transition-shadow">
-          {/* Room inside displaying the puppy */}
-          <span className="tp-door__room bg-[#1F110A]">
+        {/* Arched Door Frame with Thick Brown Base */}
+        <span className="tp-door__frame block relative aspect-[4/5.2] rounded-t-full border-3 border-[#2A1710] bg-[#1F110A] shadow-md group-hover:shadow-xl transition-all [perspective:900px]">
+          {/* Puppy Photo inside arched room */}
+          <span
+            ref={photoRef}
+            className="tp-door__room absolute inset-0 size-full overflow-hidden rounded-t-full"
+          >
             <Image
               src={puppy.cover.url}
-              alt={puppy.cover.alt || `${puppy.name}, ${puppy.breed} puppy`}
+              alt={puppy.cover.alt || `${puppy.name}, ${puppy.breed}`}
               fill
               priority={priority}
               sizes="(min-width: 1024px) 16rem, (min-width: 640px) 40vw, 85vw"
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              className="object-cover transition-transform duration-500 ease-out"
             />
-            {/* Subtle light vignette inside room */}
             <span className="absolute inset-0 bg-gradient-to-t from-[#2A1710]/40 via-transparent to-transparent pointer-events-none" />
-
-            {/* Small paw trail when door swings open */}
-            <span
-              className={`absolute bottom-3 left-4 flex gap-1.5 transition-opacity duration-500 pointer-events-none ${
-                isDoorOpen ? "opacity-75" : "opacity-0"
-              }`}
-            >
-              <svg viewBox="0 0 64 64" className="size-3.5 fill-[#FFF6E5]/90 -rotate-12">
-                <path d="M32 30.5c-7.6 0-15.6 8.3-15.6 15.5 0 5.4 4.2 8.3 9.2 8.3 2.6 0 4.5-1.1 6.4-1.1s3.8 1.1 6.4 1.1c5 0 9.2-2.9 9.2-8.3 0-7.2-8-15.5-15.6-15.5zM19.28 26.71C21.07 30.08 20.42 33.92 17.84 35.29C15.25 36.67 11.71 35.05 9.92 31.69C8.13 28.32 8.78 24.48 11.36 23.11C13.95 21.73 17.49 23.35 19.28 26.71ZM29.62 15.64C30.32 19.62 28.46 23.26 25.47 23.79C22.48 24.32 19.48 21.53 18.78 17.56C18.08 13.58 19.94 9.94 22.93 9.41C25.92 8.88 28.92 11.67 29.62 15.64ZM45.22 17.56C44.52 21.53 41.52 24.32 38.53 23.79C35.54 23.26 33.68 19.62 34.38 15.64C35.08 11.67 38.08 8.88 41.07 9.41C44.06 9.94 45.92 13.58 45.22 17.56ZM54.08 31.69C52.29 35.05 48.75 36.67 46.16 35.29C43.58 33.92 42.93 30.08 44.72 26.71C46.51 23.35 50.05 21.73 52.64 23.11C55.22 24.48 55.87 28.32 54.08 31.69Z" />
-              </svg>
-              <svg viewBox="0 0 64 64" className="size-3 fill-[#FFF6E5]/75 rotate-6">
-                <path d="M32 30.5c-7.6 0-15.6 8.3-15.6 15.5 0 5.4 4.2 8.3 9.2 8.3 2.6 0 4.5-1.1 6.4-1.1s3.8 1.1 6.4 1.1c5 0 9.2-2.9 9.2-8.3 0-7.2-8-15.5-15.6-15.5zM19.28 26.71C21.07 30.08 20.42 33.92 17.84 35.29C15.25 36.67 11.71 35.05 9.92 31.69C8.13 28.32 8.78 24.48 11.36 23.11C13.95 21.73 17.49 23.35 19.28 26.71ZM29.62 15.64C30.32 19.62 28.46 23.26 25.47 23.79C22.48 24.32 19.48 21.53 18.78 17.56C18.08 13.58 19.94 9.94 22.93 9.41C25.92 8.88 28.92 11.67 29.62 15.64ZM45.22 17.56C44.52 21.53 41.52 24.32 38.53 23.79C35.54 23.26 33.68 19.62 34.38 15.64C35.08 11.67 38.08 8.88 41.07 9.41C44.06 9.94 45.92 13.58 45.22 17.56ZM54.08 31.69C52.29 35.05 48.75 36.67 46.16 35.29C43.58 33.92 42.93 30.08 44.72 26.71C46.51 23.35 50.05 21.73 52.64 23.11C55.22 24.48 55.87 28.32 54.08 31.69Z" />
-              </svg>
-            </span>
           </span>
 
-          {/* 3D Doorway with swinging wooden door leaf */}
-          <span aria-hidden="true" className="tp-door__way">
+          {/* Open Door Leaf on the Left Side (hinged on left edge) */}
+          <span aria-hidden="true" className="tp-door__way absolute inset-0 rounded-t-full overflow-hidden pointer-events-none">
             <span
-              className={`tp-door__leaf tp-door__leaf-wood ${isDoorOpen ? "door-is-open" : ""}`}
+              ref={leafRef}
+              className="tp-door__leaf absolute inset-y-0 left-0 w-full origin-left rounded-t-full border-r-2 border-[#2A1710] shadow-2xl transition-transform duration-300"
               style={{
                 backgroundColor: doorColor,
-                transform: isDoorOpen ? "rotateY(-78deg)" : "rotateY(0deg)",
+                transform: isHovered ? "rotateY(-78deg)" : "rotateY(-70deg)",
+                backgroundImage:
+                  "repeating-linear-gradient(90deg, transparent 0, transparent 22px, rgba(42,23,16,0.3) 22px, rgba(42,23,16,0.35) 24px), linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.25) 100%)",
               }}
             >
-              {/* Vertical panel lines mimicking wooden planks */}
-              <span className="absolute inset-y-0 left-1/3 w-[1px] bg-[#2A1710]/30 shadow-[1px_0_1px_rgba(255,255,255,0.15)]" />
-              <span className="absolute inset-y-0 left-2/3 w-[1px] bg-[#2A1710]/30 shadow-[1px_0_1px_rgba(255,255,255,0.15)]" />
-
-              {/* Paw-shaped peephole */}
-              <svg
-                viewBox="0 0 64 64"
-                className="tp-door__peephole drop-shadow-sm opacity-60"
-                aria-hidden="true"
-                fill="currentColor"
-              >
-                <path d="M32 30.5c-7.6 0-15.6 8.3-15.6 15.5 0 5.4 4.2 8.3 9.2 8.3 2.6 0 4.5-1.1 6.4-1.1s3.8 1.1 6.4 1.1c5 0 9.2-2.9 9.2-8.3 0-7.2-8-15.5-15.6-15.5zM19.28 26.71C21.07 30.08 20.42 33.92 17.84 35.29C15.25 36.67 11.71 35.05 9.92 31.69C8.13 28.32 8.78 24.48 11.36 23.11C13.95 21.73 17.49 23.35 19.28 26.71ZM29.62 15.64C30.32 19.62 28.46 23.26 25.47 23.79C22.48 24.32 19.48 21.53 18.78 17.56C18.08 13.58 19.94 9.94 22.93 9.41C25.92 8.88 28.92 11.67 29.62 15.64ZM45.22 17.56C44.52 21.53 41.52 24.32 38.53 23.79C35.54 23.26 33.68 19.62 34.38 15.64C35.08 11.67 38.08 8.88 41.07 9.41C44.06 9.94 45.92 13.58 45.22 17.56ZM54.08 31.69C52.29 35.05 48.75 36.67 46.16 35.29C43.58 33.92 42.93 30.08 44.72 26.71C46.51 23.35 50.05 21.73 52.64 23.11C55.22 24.48 55.87 28.32 54.08 31.69Z" />
-              </svg>
-
-              {/* Golden brass doorknob with 3D shadow */}
-              <span className="tp-door__knob shadow-lg ring-1 ring-[#5A2E14] bg-gradient-to-br from-[#FFE4A0] via-[#F8D08C] to-[#C27D2E]" />
+              {/* Golden Brass Knob */}
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 size-3.5 rounded-full bg-gradient-to-br from-[#FFE4A0] via-[#F8D08C] to-[#C27D2E] border border-[#2A1710] shadow-md" />
             </span>
           </span>
 
-          {/* Tilted "Available" Sticker Badge */}
+          {/* Tilted White "Available" Sticker Pill on top right overlapping arch border */}
           <span
-            className="tp-door__tag font-extrabold tracking-wider uppercase text-[10px] sm:text-[11px] shadow-sm transform -rotate-6 border-2 border-[#2A1710]"
-            style={{
-              backgroundColor: puppy.status === "available" ? "#FFF6E5" : "#F8D08C",
-              color: puppy.status === "available" ? "#2A1710" : "#5A2E14",
-            }}
+            className="tp-door__tag absolute -top-2 -right-2 z-20 bg-white text-[#2A1710] font-extrabold uppercase text-[10px] sm:text-[11px] tracking-wider px-3 py-1 rounded-full border-2 border-[#2A1710] shadow-sm transform rotate-[8deg]"
           >
             {puppy.status === "available" ? "Available" : "Gone home"}
           </span>
+
+          {/* Thick Brown Base threshold step */}
+          <span className="absolute -bottom-2 -inset-x-2 h-2.5 rounded-sm bg-[#5A2E14] border-2 border-[#2A1710] shadow-sm" />
         </span>
       </Link>
     </li>

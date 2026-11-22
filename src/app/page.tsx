@@ -1,4 +1,7 @@
-import { HeroSection } from "@/components/home/HeroSection";
+"use client";
+
+import { useState } from "react";
+import { HeroSection, HERO_ARCH_PUPPIES } from "@/components/home/HeroSection";
 import { MeetThePups } from "@/components/home/MeetThePups";
 import { ImportedPlaneSection } from "@/components/home/ImportedPlaneSection";
 import { ShowroomSection } from "@/components/home/ShowroomSection";
@@ -6,32 +9,45 @@ import { PuppyJourney } from "@/components/home/PuppyJourney";
 import { HappyFamiliesSection } from "@/components/home/HappyFamiliesSection";
 import { FaqPreviewSection } from "@/components/home/FaqPreviewSection";
 import { BottomCtaSection } from "@/components/home/BottomCtaSection";
+import { ContinuousTeddyMascot } from "@/components/common/ContinuousTeddyMascot";
 
 export default function HomePage() {
-  return (
-    <main className="flex-1 flex flex-col overflow-x-hidden">
-      {/* 1. Hero with Arch Photo Strip, Half Mascot, & Scroll Runner */}
-      <HeroSection />
+  const [activeArchIndex, setActiveArchIndex] = useState(2); // Center arch default
 
-      {/* 2. Available Puppies (Wooden 3D Door Cards) */}
+  return (
+    <main className="flex-1 flex flex-col overflow-x-hidden relative">
+      {/* THE MASCOT ("Teddy") - ONE CONTINUOUS CHARACTER */}
+      <ContinuousTeddyMascot
+        heroActiveArch={activeArchIndex}
+        onSelectHeroArch={setActiveArchIndex}
+        puppyBreeds={HERO_ARCH_PUPPIES}
+      />
+
+      {/* B) Hero with Headline, CTAs, Full-width Arch Strip, & Center Mascot */}
+      <HeroSection
+        activeArchIndex={activeArchIndex}
+        onSelectArch={setActiveArchIndex}
+      />
+
+      {/* C) Meet the Pups (Arched Door Cards, 2-col Mobile / 4-col Desktop) */}
       <MeetThePups />
 
-      {/* 3. Imported For You (Korea to Dubai GSAP MotionPath Plane) */}
+      {/* E) Imported For You (Pinned, Arrow Signboard, Korea to Dubai Plane) */}
       <ImportedPlaneSection />
 
-      {/* 4. Two Ways to Meet Your Puppy (Striped Showroom Booth + Skyline + 4 Trust Points) */}
+      {/* F) Two Ways to Meet Your Puppy (Arrow Signboard, Striped Booth, Skyline Bars) */}
       <ShowroomSection />
 
-      {/* 5. Your Puppy Journey (3-Step Pop + Big Double Doors Open on Scroll) */}
+      {/* G) Your Puppy Journey (Steps 1, 2, 3 + Phone WhatsApp Mockup) */}
       <PuppyJourney />
 
-      {/* 6. Happy Families (Polaroids Tilt & Settle Bounce) */}
+      {/* H) Why Families Trust + Happy Families (Double Border Card + Polaroids Tilt) */}
       <HappyFamiliesSection />
 
-      {/* 7. FAQ Preview (Accordion + Mascot Running Across Bottom) */}
+      {/* I) Night Wall + FAQ (Planks Transition, Lantern, Stars, Star Bullets) */}
       <FaqPreviewSection />
 
-      {/* 8. Night "Welcome Home" Final CTA (Dark Chocolate + Lantern + Moon + Light Spill) */}
+      {/* J) Ready to Meet Your Best Friend (Porch, Door Opens to Puppy, Green Button) */}
       <BottomCtaSection />
     </main>
   );

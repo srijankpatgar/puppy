@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
-// Authentic 5-step footprint positions and rotations from reference
+// 5-step footprint positions and rotations from reference
 const FOOTPRINT_STEPS = [
   { left: 18, top: 6, rot: 14, delay: 0.16 },
   { left: 27, top: -4, rot: 6, delay: 0.28 },
@@ -26,7 +26,6 @@ export function RouteCurtain() {
 
   // Initial page load intro animation
   useEffect(() => {
-    // Reveal site after 1.15 seconds
     const liftTimer = setTimeout(() => {
       setCurtainState("lifting");
     }, 1150);
@@ -41,20 +40,19 @@ export function RouteCurtain() {
     };
   }, []);
 
-  // Listen for route changes
+  // Listen for route changes & door clicks to trigger wipe in then out
   useEffect(() => {
     if (pathname === prevPathname.current) return;
     prevPathname.current = pathname;
 
-    // Trigger transition curtain on route navigation
     setCurtainState("covering");
     const liftTimer = setTimeout(() => {
       setCurtainState("lifting");
-    }, 450);
+    }, 550);
 
     const idleTimer = setTimeout(() => {
       setCurtainState("idle");
-    }, 950);
+    }, 1050);
 
     return () => {
       clearTimeout(liftTimer);
@@ -87,22 +85,22 @@ export function RouteCurtain() {
             >
               <path
                 d="M0 40V27A38 25 0 0 1 76 27V40Z"
-                fill="#fbe3b4"
+                fill="#FFF6E5"
               />
               <path
                 d="M0 27A38 25 0 0 1 76 27"
                 fill="none"
-                stroke="#2a170e"
+                stroke="#2A1710"
                 strokeWidth="3"
               />
               <path
                 d="M11 33A27 19 0 0 1 65 33"
                 fill="none"
-                stroke="#2a170e"
+                stroke="#2A1710"
                 strokeWidth="1.6"
                 strokeDasharray="3.5 5.5"
                 strokeLinecap="round"
-                opacity="0.42"
+                opacity="0.4"
               />
             </pattern>
           </defs>
@@ -130,7 +128,7 @@ export function RouteCurtain() {
             ))}
           </div>
 
-          {/* Running Puppy Character (tp-runner) with SHAKING TAIL */}
+          {/* Running Puppy Character with SHAKING TAIL */}
           <div className="tp-curtain__runner">
             <svg
               viewBox="0 0 300 240"
@@ -143,99 +141,104 @@ export function RouteCurtain() {
                 cy="230"
                 rx="86"
                 ry="7"
-                fill="#2a170e"
+                fill="#2A1710"
                 opacity="0.12"
                 className="tp-runner__shadow"
               />
 
-              <g className="tp-runner__body">
-                {/* Back Far Leg */}
-                <g
+              <g className="tp-runner__dog">
+                {/* Far Back Leg */}
+                <path
+                  d={LEG_FAR}
+                  fill="#785838"
+                  stroke="#2A1710"
+                  strokeWidth="3.4"
                   className="tp-runner__leg tp-runner__leg--bf"
                   style={{ transformOrigin: "94px 192px" }}
-                >
-                  <path d={LEG_FAR} fill="#e4a352" stroke="#2a170e" strokeWidth="3.4" strokeLinejoin="round" />
-                  <path d="M-3.5 29 v5 M4.5 29 v5" stroke="#2a170e" strokeWidth="2.4" strokeLinejoin="round" fill="none" />
-                </g>
+                />
 
-                {/* Front Far Leg */}
-                <g
+                {/* Far Front Leg */}
+                <path
+                  d={LEG_FAR}
+                  fill="#785838"
+                  stroke="#2A1710"
+                  strokeWidth="3.4"
                   className="tp-runner__leg tp-runner__leg--ff"
                   style={{ transformOrigin: "168px 192px" }}
-                >
-                  <path d={LEG_FAR} fill="#e4a352" stroke="#2a170e" strokeWidth="3.4" strokeLinejoin="round" />
-                  <path d="M-3.5 29 v5 M4.5 29 v5" stroke="#2a170e" strokeWidth="2.4" strokeLinejoin="round" fill="none" />
+                />
+
+                {/* Shaking Tail */}
+                <g className="tp-runner__tail" style={{ transformOrigin: "84px 150px" }}>
+                  <path
+                    d="M86 152 C80 146 76 140 74 136"
+                    stroke="#2A1710"
+                    strokeWidth="6"
+                    strokeLinecap="round"
+                    fill="none"
+                  />
+                  <ellipse cx="70" cy="126" rx="17" ry="16" fill="#F8D08C" stroke="#2A1710" strokeWidth="3.4" />
                 </g>
 
-                {/* Shaking & Wagging Tail */}
-                <g
-                  className="tp-runner__tail"
-                  style={{ transformOrigin: "84px 150px" }}
-                >
-                  <path d="M86 152 C80 146 76 140 74 136" stroke="#2a170e" strokeWidth="9" strokeLinejoin="round" strokeLinecap="round" fill="none" />
-                  <path d="M86 152 C80 146 76 140 74 136" stroke="#f2be6b" strokeWidth="4" fill="none" strokeLinecap="round" />
-                  <circle cx="72" cy="132" r="14" fill="#f2be6b" stroke="#2a170e" strokeWidth="3.4" />
+                {/* Body */}
+                <g className="tp-runner__body">
+                  <ellipse cx="140" cy="170" rx="64" ry="36" fill="#F8D08C" stroke="#2A1710" strokeWidth="3.4" />
+                  <ellipse cx="192" cy="166" rx="30" ry="32" fill="#F8D08C" stroke="#2A1710" strokeWidth="3.4" />
                 </g>
 
-                {/* Back Near Leg */}
-                <g
+                {/* Near Back Leg */}
+                <path
+                  d={LEG_NEAR}
+                  fill="#F8D08C"
+                  stroke="#2A1710"
+                  strokeWidth="3.4"
                   className="tp-runner__leg tp-runner__leg--bn"
                   style={{ transformOrigin: "110px 194px" }}
-                >
-                  <path d={LEG_NEAR} fill="#f2be6b" stroke="#2a170e" strokeWidth="3.4" strokeLinejoin="round" />
-                  <path d="M-3.5 27 v5 M4.5 27 v5" stroke="#2a170e" strokeWidth="2.4" strokeLinejoin="round" fill="none" />
-                </g>
+                />
 
-                {/* Fluffy Body */}
-                <ellipse cx="148" cy="170" rx="60" ry="34" fill="#f2be6b" stroke="#2a170e" strokeWidth="3.4" />
-                <circle cx="188" cy="164" r="28" fill="#f2be6b" stroke="#2a170e" strokeWidth="3.4" />
-
-                {/* Front Near Leg */}
-                <g
+                {/* Near Front Leg */}
+                <path
+                  d={LEG_NEAR}
+                  fill="#F8D08C"
+                  stroke="#2A1710"
+                  strokeWidth="3.4"
                   className="tp-runner__leg tp-runner__leg--fn"
                   style={{ transformOrigin: "186px 194px" }}
-                >
-                  <path d={LEG_NEAR} fill="#f2be6b" stroke="#2a170e" strokeWidth="3.4" strokeLinejoin="round" />
-                  <path d="M-3.5 27 v5 M4.5 27 v5" stroke="#2a170e" strokeWidth="2.4" strokeLinejoin="round" fill="none" />
-                </g>
+                />
 
                 {/* Bobbing Head */}
                 <g className="tp-runner__head">
                   {/* Collar & Golden Tag */}
-                  <path d="M178 146 Q212 162 246 146 L246 154 Q212 170 178 154 Z" fill="#a24a1a" stroke="#2a170e" strokeWidth="3" />
-                  <circle cx="212" cy="162" r="6" fill="#fbe3b4" stroke="#2a170e" strokeWidth="2" />
+                  <path d="M178 146 Q212 162 246 146 L246 154 Q212 170 178 154 Z" fill="#A8481C" stroke="#2A1710" strokeWidth="3" />
+                  <circle cx="212" cy="162" r="6" fill="#FBE3B4" stroke="#2A1710" strokeWidth="2" />
 
                   {/* Floppy Left & Right Ears */}
-                  <ellipse cx="166" cy="108" rx="16" ry="30" fill="#e4a352" stroke="#2a170e" strokeWidth="3.4" className="tp-runner__ear" style={{ transformOrigin: "174px 82px" }} />
-                  <ellipse cx="258" cy="108" rx="16" ry="30" fill="#e4a352" stroke="#2a170e" strokeWidth="3.4" className="tp-runner__ear tp-runner__ear--r" style={{ transformOrigin: "250px 82px" }} />
+                  <ellipse cx="166" cy="108" rx="16" ry="30" fill="#E4A352" stroke="#2A1710" strokeWidth="3.4" className="tp-runner__ear" style={{ transformOrigin: "174px 82px" }} />
+                  <ellipse cx="258" cy="108" rx="16" ry="30" fill="#E4A352" stroke="#2A1710" strokeWidth="3.4" className="tp-runner__ear tp-runner__ear--r" style={{ transformOrigin: "250px 82px" }} />
 
                   {/* Head */}
-                  <ellipse cx="212" cy="98" rx="46" ry="42" fill="#f2be6b" stroke="#2a170e" strokeWidth="3.4" />
-                  <circle cx="212" cy="56" r="14" fill="#f2be6b" stroke="#2a170e" strokeWidth="3" />
+                  <ellipse cx="212" cy="98" rx="46" ry="42" fill="#F8D08C" stroke="#2A1710" strokeWidth="3.4" />
+                  <circle cx="212" cy="56" r="14" fill="#F8D08C" stroke="#2A1710" strokeWidth="3" />
 
                   {/* Cream Snout & Rosy Cheeks */}
-                  <ellipse cx="212" cy="118" rx="22" ry="18" fill="#fbe3b4" />
-                  <circle cx="182" cy="114" r="6" fill="#f9b9a6" opacity="0.85" />
-                  <circle cx="242" cy="114" r="6" fill="#f9b9a6" opacity="0.85" />
+                  <ellipse cx="212" cy="118" rx="22" ry="18" fill="#FFF6E5" />
+                  <circle cx="182" cy="114" r="6" fill="#F9B9A6" opacity="0.85" />
+                  <circle cx="242" cy="114" r="6" fill="#F9B9A6" opacity="0.85" />
 
                   {/* Happy Smiling Eyes */}
-                  <path d="M188 98 Q195 88 202 98 M222 98 Q229 88 236 98" stroke="#2a170e" strokeWidth="3.4" strokeLinejoin="round" strokeLinecap="round" fill="none" />
+                  <path d="M188 98 Q195 88 202 98 M222 98 Q229 88 236 98" stroke="#2A1710" strokeWidth="3.4" strokeLinejoin="round" strokeLinecap="round" fill="none" />
 
                   {/* Dark Nose & Tongue */}
-                  <ellipse cx="212" cy="114" rx="7" ry="5" fill="#2a170e" />
-                  <path d="M212 119 v5 M207 124 q5 7 10 0" stroke="#2a170e" strokeWidth="2.4" fill="none" />
-                  <path d="M208 126 q4 8 8 0" fill="#e98c8c" stroke="#2a170e" strokeWidth="2" />
+                  <ellipse cx="212" cy="114" rx="7" ry="5" fill="#2A1710" />
+                  <path d="M212 119 v5 M207 124 q5 7 10 0" stroke="#2A1710" strokeWidth="2.4" fill="none" />
+                  <path d="M208 126 q4 8 8 0" fill="#E98C8C" stroke="#2A1710" strokeWidth="2" />
                 </g>
               </g>
             </svg>
           </div>
 
-          {/* Note Under Runner */}
+          {/* Note Under Runner: Handwritten "every puppy is family" */}
           <div className="tp-curtain__note text-center">
             <p className="font-scrawl text-lg sm:text-2xl text-[#5A2E14] font-bold">
-              hey, just a min…
-            </p>
-            <p className="font-scrawl text-xs sm:text-sm text-[#A8481C] font-semibold -mt-1 tracking-wide">
               every puppy is family
             </p>
           </div>

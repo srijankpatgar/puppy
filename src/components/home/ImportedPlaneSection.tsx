@@ -8,107 +8,97 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 
-// Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 }
 
 // ============================================================================
-// TIMINGS & DISTANCE CONSTANTS (TECH RULES COMPLIANT)
+// TIMINGS & CONSTANTS
 // ============================================================================
-const PIN_SCROLL_DISTANCE = "+=1000";
-const SIGN_SWING_DURATION = 1.2;
-const PATH_STROKE_WIDTH = 4;
-const PLANE_SCALE = 1;
+const PIN_DISTANCE = "+=1200"; // 1.2 screens of scrubbed pinning
+const SIGN_DROP_DURATION = 0.9;
+const PATH_STROKE_WIDTH = 3.5;
 
 export function ImportedPlaneSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const triggerRef = useRef<HTMLDivElement>(null);
-  const signboardRef = useRef<HTMLDivElement>(null);
+  const pinContainerRef = useRef<HTMLDivElement>(null);
+  const arrowSignRef = useRef<HTMLDivElement>(null);
   const planeRef = useRef<SVGGElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
-  const dubaiPulseRef = useRef<SVGGElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
+  const dubaiPinRef = useRef<SVGGElement>(null);
+  const cloudPuffsRef = useRef<SVGGElement>(null);
 
   useEffect(() => {
-    // Respect prefers-reduced-motion
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mediaQuery.matches) {
-      if (pathRef.current) {
-        pathRef.current.style.strokeDashoffset = "0";
-      }
-      if (ctaRef.current) {
-        ctaRef.current.style.opacity = "1";
-        ctaRef.current.style.transform = "none";
-      }
+      if (pathRef.current) pathRef.current.style.strokeDashoffset = "0";
       return;
     }
 
     const ctx = gsap.context(() => {
       if (
-        !triggerRef.current ||
+        !pinContainerRef.current ||
+        !arrowSignRef.current ||
         !planeRef.current ||
         !pathRef.current ||
-        !dubaiPulseRef.current ||
-        !ctaRef.current ||
-        !signboardRef.current
+        !dubaiPinRef.current
       ) {
         return;
       }
 
-      // 1. Signboard drop-in and gentle swing
+      // 1. Wooden Arrow-Shaped Signboard drops in with short swing
       gsap.fromTo(
-        signboardRef.current,
-        { y: -80, opacity: 0, rotate: -6 },
+        arrowSignRef.current,
+        { y: -70, opacity: 0, rotate: -6 },
         {
           y: 0,
           opacity: 1,
-          rotate: 0,
-          duration: SIGN_SWING_DURATION,
+          rotate: -2,
+          duration: SIGN_DROP_DURATION,
           ease: "elastic.out(1, 0.4)",
           scrollTrigger: {
-            trigger: triggerRef.current,
-            start: "top 80%",
+            trigger: pinContainerRef.current,
+            start: "top 75%",
             toggleActions: "play none none reverse",
           },
         }
       );
 
-      // Measure total path length for accurate stroke-dashoffset scrub
+      // Measure path length for stroke-dashoffset drawing
       const pathLength = pathRef.current.getTotalLength();
       gsap.set(pathRef.current, {
         strokeDasharray: pathLength,
         strokeDashoffset: pathLength,
       });
 
-      // 2. Timeline pinned to scroll for the Korea to Dubai flight
-      const flightTimeline = gsap.timeline({
+      // 2. Pinned Timeline (1.2 screens)
+      const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: triggerRef.current,
+          trigger: pinContainerRef.current,
           start: "top top",
-          end: PIN_SCROLL_DISTANCE,
-          scrub: 0.8,
+          end: PIN_DISTANCE,
+          scrub: 1,
           pin: true,
           anticipatePin: 1,
         },
       });
 
-      // Animate plane along SVG flight path curve & draw dotted path behind it
-      flightTimeline
-        .to(
-          planeRef.current,
-          {
-            motionPath: {
-              path: pathRef.current,
-              align: pathRef.current,
-              autoRotate: true,
-              alignOrigin: [0.5, 0.5],
-            },
-            ease: "none",
-            duration: 1,
+      // Plane flies Korea (lower left) to Dubai (right) along curve
+      tl.to(
+        planeRef.current,
+        {
+          motionPath: {
+            path: pathRef.current,
+            align: pathRef.current,
+            autoRotate: true,
+            alignOrigin: [0.5, 0.5],
           },
-          0
-        )
+          ease: "none",
+          duration: 1,
+        },
+        0
+      )
+        // Dotted path draws behind it
         .to(
           pathRef.current,
           {
@@ -118,18 +108,18 @@ export function ImportedPlaneSection() {
           },
           0
         )
-        // Dubai pin pulses on arrival (at ~85% progress)
+        // Gentle bobbing & cloud puffs
         .fromTo(
-          dubaiPulseRef.current,
-          { scale: 0.8, opacity: 0 },
-          { scale: 1.4, opacity: 1, duration: 0.25, ease: "back.out(2)" },
-          0.85
+          cloudPuffsRef.current,
+          { opacity: 0, scale: 0.8 },
+          { opacity: 0.8, scale: 1.1, duration: 0.5, yoyo: true, repeat: 1 },
+          0.3
         )
-        // CTA button fades and springs in
+        // Dubai pin pulses on arrival
         .fromTo(
-          ctaRef.current,
-          { opacity: 0, y: 24, scale: 0.9 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.25, ease: "power2.out" },
+          dubaiPinRef.current,
+          { scale: 0.8, opacity: 0.6 },
+          { scale: 1.45, opacity: 1, duration: 0.25, ease: "back.out(2)" },
           0.88
         );
     }, sectionRef);
@@ -140,55 +130,51 @@ export function ImportedPlaneSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-quilt-caramel text-[#2A1710] overflow-hidden"
+      className="relative bg-[#F8D08C] text-[#2A1710] overflow-hidden select-none"
     >
       <CloudDivider position="top" fill="#FFF6E5" className="absolute top-0 inset-x-0" />
 
       <div
-        ref={triggerRef}
-        className="min-h-screen flex flex-col items-center justify-between py-16 sm:py-24 px-4 sm:px-6 relative z-10 max-w-6xl mx-auto"
+        ref={pinContainerRef}
+        className="min-h-screen flex flex-col items-center justify-between py-16 sm:py-20 px-4 sm:px-6 relative z-10 max-w-6xl mx-auto"
       >
-        {/* Wooden Signboard "Imported for you" */}
+        {/* Wooden ARROW-SHAPED Signboard "Imported for you" pointing RIGHT, rotate -2deg */}
         <div
-          ref={signboardRef}
-          className="relative mt-8 sm:mt-12 flex flex-col items-center text-center select-none"
+          ref={arrowSignRef}
+          className="relative mt-8 sm:mt-12 flex flex-col items-center text-center"
         >
           {/* Hanging Ropes */}
-          <div className="flex justify-between w-48 sm:w-64 -mb-3 z-0">
-            <div className="w-1.5 h-8 bg-[#5A2E14] rounded-t-full shadow-xs" />
-            <div className="w-1.5 h-8 bg-[#5A2E14] rounded-t-full shadow-xs" />
+          <div className="flex justify-between w-48 sm:w-60 -mb-2 z-0">
+            <div className="w-1.5 h-6 bg-[#5A2E14] rounded-t-full shadow-xs" />
+            <div className="w-1.5 h-6 bg-[#5A2E14] rounded-t-full shadow-xs" />
           </div>
 
-          {/* Wooden Board */}
-          <div className="relative z-10 px-8 sm:px-12 py-3 sm:py-4 rounded-2xl bg-gradient-to-b from-[#A8481C] to-[#8E3F15] border-3 border-[#2A1710] shadow-[0_8px_0_#5A2E14] tp-signboard-swing">
-            <span className="font-display font-extrabold text-2xl sm:text-4xl text-[#FFF6E5] tracking-wide drop-shadow-md block">
-              Imported for you
-            </span>
-            <span className="font-scrawl text-sm sm:text-base text-[#F8D08C] font-semibold block mt-0.5">
-              from champion Korean bloodlines to your arms
+          {/* Arrow-Shaped Signboard pointing RIGHT */}
+          <div
+            className="relative z-10 pl-8 pr-12 sm:pl-10 sm:pr-14 py-3 sm:py-4 bg-gradient-to-r from-[#A8481C] to-[#8E3F15] text-[#FFF6E5] border-3 border-[#2A1710] shadow-[0_6px_0_#5A2E14]"
+            style={{
+              clipPath:
+                "polygon(0% 0%, calc(100% - 24px) 0%, 100% 50%, calc(100% - 24px) 100%, 0% 100%)",
+              transform: "rotate(-2deg)",
+            }}
+          >
+            <span className="font-display font-black text-2xl sm:text-4xl text-[#FFF6E5] tracking-wide block drop-shadow-sm">
+              Imported for you ➔
             </span>
           </div>
         </div>
 
-        {/* SVG Flight Map Area (Korea to Dubai) */}
-        <div className="w-full max-w-4xl aspect-[16/9] sm:aspect-[21/9] my-6 relative flex items-center justify-center">
+        {/* SVG Flight Map: Dotted Brown Curve from Korea (lower LEFT) to Dubai (RIGHT) */}
+        <div className="w-full max-w-4xl aspect-[16/9] sm:aspect-[21/9] my-4 relative flex items-center justify-center">
           <svg
             viewBox="0 0 1000 440"
             className="w-full h-full overflow-visible select-none drop-shadow-sm"
           >
-            {/* Background Subtle Continental Outlines */}
-            <g opacity="0.12" fill="#5A2E14">
-              {/* Arabian Peninsula */}
-              <path d="M 160 270 Q 220 280 250 340 Q 200 390 140 360 Q 120 310 160 270 Z" />
-              {/* Asia Mainland & Korea Peninsula */}
-              <path d="M 640 120 Q 750 100 840 110 Q 880 180 820 220 Q 760 200 700 170 Z" />
-            </g>
-
-            {/* Dotted Curved Flight Trajectory: Korea (800, 140) to Dubai (200, 310) */}
+            {/* Dotted Brown Curve: Korea (160, 340) up and over to Dubai (840, 160) */}
             <path
               ref={pathRef}
-              id="korea-dubai-curve"
-              d="M 800 140 C 650 40, 380 90, 200 310"
+              id="korea-to-dubai-curve"
+              d="M 160 340 C 320 80, 680 40, 840 160"
               fill="none"
               stroke="#5A2E14"
               strokeWidth={PATH_STROKE_WIDTH}
@@ -196,30 +182,35 @@ export function ImportedPlaneSection() {
               strokeLinecap="round"
             />
 
-            {/* Seoul, Korea Departure Pin */}
-            <g transform="translate(800, 140)">
-              {/* Ripple aura */}
-              <circle r="22" fill="#A8481C" opacity="0.18" />
-              <circle r="14" fill="#A8481C" stroke="#2A1710" strokeWidth="2.5" />
-              <circle r="5" fill="#FFF6E5" />
-              {/* City Label Tag */}
-              <g transform="translate(0, -28)">
+            {/* Cloud Puffs */}
+            <g ref={cloudPuffsRef} opacity="0">
+              <circle cx="480" cy="85" r="14" fill="#FFFDF8" opacity="0.9" />
+              <circle cx="500" cy="80" r="18" fill="#FFFDF8" opacity="0.95" />
+              <circle cx="520" cy="85" r="14" fill="#FFFDF8" opacity="0.9" />
+            </g>
+
+            {/* KOREA Departure Pin (lower LEFT: 160, 340) */}
+            <g transform="translate(160, 340)">
+              <circle r="16" fill="#A8481C" opacity="0.25" />
+              <circle r="10" fill="#A8481C" stroke="#2A1710" strokeWidth="2" />
+              <circle r="3.5" fill="#FFF6E5" />
+              {/* Label */}
+              <g transform="translate(0, 24)">
                 <rect
-                  x="-42"
-                  y="-14"
-                  width="84"
-                  height="26"
-                  rx="13"
+                  x="-36"
+                  y="-12"
+                  width="72"
+                  height="22"
+                  rx="11"
                   fill="#FFF6E5"
                   stroke="#2A1710"
-                  strokeWidth="2"
-                  className="shadow-sm"
+                  strokeWidth="1.5"
                 />
                 <text
                   x="0"
-                  y="4"
+                  y="3"
                   textAnchor="middle"
-                  className="font-display font-bold text-xs"
+                  className="font-display font-extrabold text-[11px]"
                   fill="#2A1710"
                 >
                   🇰🇷 Korea
@@ -227,33 +218,31 @@ export function ImportedPlaneSection() {
               </g>
             </g>
 
-            {/* Dubai Arrival Pin with Golden Pulsing Rings */}
-            <g transform="translate(200, 310)">
-              {/* Pulsing ring indicator */}
-              <g ref={dubaiPulseRef}>
-                <circle r="36" fill="#F8D08C" opacity="0.35" />
-                <circle r="24" fill="#F8D08C" opacity="0.65" />
+            {/* DUBAI Arrival Pin (RIGHT: 840, 160) */}
+            <g transform="translate(840, 160)">
+              <g ref={dubaiPinRef}>
+                <circle r="28" fill="#FFF6E5" opacity="0.4" />
+                <circle r="18" fill="#5A2E14" opacity="0.2" />
               </g>
-              <circle r="15" fill="#F8D08C" stroke="#2A1710" strokeWidth="2.5" />
-              <circle r="6" fill="#2A1710" />
-              {/* City Label Tag */}
-              <g transform="translate(0, 34)">
+              <circle r="12" fill="#2A1710" stroke="#FFF6E5" strokeWidth="2" />
+              <circle r="4" fill="#F8D08C" />
+              {/* Label */}
+              <g transform="translate(0, -24)">
                 <rect
-                  x="-42"
-                  y="-14"
-                  width="84"
-                  height="26"
-                  rx="13"
+                  x="-36"
+                  y="-12"
+                  width="72"
+                  height="22"
+                  rx="11"
                   fill="#2A1710"
                   stroke="#F8D08C"
-                  strokeWidth="2"
-                  className="shadow-md"
+                  strokeWidth="1.5"
                 />
                 <text
                   x="0"
-                  y="4"
+                  y="3"
                   textAnchor="middle"
-                  className="font-display font-bold text-xs"
+                  className="font-display font-extrabold text-[11px]"
                   fill="#FFF6E5"
                 >
                   🇦🇪 Dubai
@@ -261,96 +250,77 @@ export function ImportedPlaneSection() {
               </g>
             </g>
 
-            {/* Cartoon Airplane with Puppy Face Peeking from the Round Window */}
+            {/* Cartoon Airplane with Puppy Face Peeking inside Round Window */}
             <g
               ref={planeRef}
-              transform="translate(800, 140) scale(1)"
+              transform="translate(160, 340)"
               style={{ transformOrigin: "center" }}
             >
-              {/* Plane Shadow */}
-              <ellipse
-                cx="0"
-                cy="18"
-                rx="28"
-                ry="7"
-                fill="#2A1710"
-                opacity="0.18"
-              />
-
-              {/* White Airplane Body */}
+              {/* White rounded fuselage */}
               <path
-                d="M -30 -6 C -34 -6 -40 -3 -42 0 C -40 3 -34 6 -30 6 L 24 6 C 36 6 44 2 44 0 C 44 -2 36 -6 24 -6 Z"
+                d="M -26 -5 C -30 -5 -36 -2 -38 0 C -36 2 -30 5 -26 5 L 22 5 C 32 5 38 2 38 0 C 38 -2 32 -5 22 -5 Z"
                 fill="#FFFDF8"
                 stroke="#2A1710"
                 strokeWidth="2.5"
               />
-
-              {/* Caramel Wings */}
-              {/* Top wing */}
+              {/* Brown-orange wings */}
               <path
-                d="M -4 -6 L -16 -24 C -18 -27 -14 -28 -10 -27 L 12 -6 Z"
-                fill="#F8D08C"
-                stroke="#2A1710"
-                strokeWidth="2.5"
-              />
-              {/* Bottom wing */}
-              <path
-                d="M -4 6 L -16 24 C -18 27 -14 28 -10 27 L 12 6 Z"
-                fill="#E4A352"
-                stroke="#2A1710"
-                strokeWidth="2.5"
-              />
-              {/* Tail Fin */}
-              <path
-                d="M -32 -6 L -44 -20 C -46 -22 -43 -23 -40 -22 L -28 -6 Z"
-                fill="#F8D08C"
-                stroke="#2A1710"
-                strokeWidth="2.5"
-              />
-
-              {/* Round Cabin Window */}
-              <circle
-                cx="6"
-                cy="0"
-                r="9"
-                fill="#87CEEB"
+                d="M -4 -5 L -14 -22 C -16 -25 -12 -26 -8 -25 L 10 -5 Z"
+                fill="#C27D2E"
                 stroke="#2A1710"
                 strokeWidth="2"
               />
-
-              {/* Adorable Puppy Face inside Cabin Window */}
-              <g transform="translate(6, 1) scale(0.65)">
-                {/* Ears */}
-                <ellipse cx="-8" cy="-5" rx="3.5" ry="6" fill="#C27D2E" />
-                <ellipse cx="8" cy="-5" rx="3.5" ry="6" fill="#C27D2E" />
-                {/* Head */}
-                <circle cx="0" cy="0" r="8" fill="#F8D08C" />
-                {/* Snout */}
-                <ellipse cx="0" cy="3" rx="4" ry="3" fill="#FFF6E5" />
-                {/* Eyes */}
-                <circle cx="-3" cy="-1" r="1.2" fill="#2A1710" />
-                <circle cx="3" cy="-1" r="1.2" fill="#2A1710" />
-                {/* Tiny nose */}
+              <path
+                d="M -4 5 L -14 22 C -16 25 -12 26 -8 25 L 10 5 Z"
+                fill="#A8481C"
+                stroke="#2A1710"
+                strokeWidth="2"
+              />
+              {/* Tail Fin */}
+              <path
+                d="M -28 -5 L -38 -18 C -40 -20 -37 -21 -34 -20 L -24 -5 Z"
+                fill="#C27D2E"
+                stroke="#2A1710"
+                strokeWidth="2"
+              />
+              {/* Round window with puppy face inside */}
+              <circle
+                cx="4"
+                cy="0"
+                r="8"
+                fill="#87CEEB"
+                stroke="#2A1710"
+                strokeWidth="1.8"
+              />
+              {/* Cute puppy face inside window */}
+              <g transform="translate(4, 1) scale(0.55)">
+                <ellipse cx="-6" cy="-4" rx="3" ry="5" fill="#C27D2E" />
+                <ellipse cx="6" cy="-4" rx="3" ry="5" fill="#C27D2E" />
+                <circle cx="0" cy="0" r="7" fill="#F8D08C" />
+                <circle cx="-2.5" cy="-1" r="1.2" fill="#2A1710" />
+                <circle cx="2.5" cy="-1" r="1.2" fill="#2A1710" />
                 <ellipse cx="0" cy="2" rx="1.5" ry="1" fill="#2A1710" />
               </g>
             </g>
           </svg>
         </div>
 
-        {/* Action Button revealed on arrival */}
+        {/* Copy + Button "See imported puppies" with mascot slot anchor */}
         <div
-          ref={ctaRef}
-          className="flex flex-col items-center gap-3 text-center mb-8"
+          data-mascot-slot="imported-bottom-right"
+          className="relative flex flex-col items-center gap-4 text-center max-w-xl mx-auto mb-6 z-10"
         >
-          <p className="font-scrawl text-base sm:text-lg text-[#5A2E14] font-semibold max-w-md">
-            Safe pet nanny flights, temperature-controlled, direct to UAE
+          <p className="text-sm sm:text-base text-[#5A2E14] leading-relaxed font-medium">
+            Exclusive Korean teacup puppies, delivered. Order from the world&apos;s
+            most reputable breeders and let us handle the import.
           </p>
+
           <Link
             href="/puppies?origin=imported"
-            className="btn-chunky text-center flex items-center justify-center gap-2.5 text-base sm:text-lg shadow-[0_6px_0_#5A2E14]"
+            className="btn-chunky py-3.5 px-8 text-sm sm:text-base shadow-[0_5px_0_#5A2E14] flex items-center justify-center gap-2"
           >
             <span>See imported puppies</span>
-            <ArrowRight className="size-5" />
+            <ArrowRight className="size-4" />
           </Link>
         </div>
       </div>
