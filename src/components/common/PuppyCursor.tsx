@@ -18,24 +18,8 @@ export function PuppyCursor() {
   const [isSupported, setIsSupported] = useState(false);
 
   useEffect(() => {
-    // Enable on any screen width >= 640px or upon mouse movement
     if (typeof window === "undefined") return;
-
-    const checkSupport = () => {
-      // Don't show canvas trail on small mobile screens
-      if (window.innerWidth < 640) {
-        setIsSupported(false);
-        return false;
-      }
-      setIsSupported(true);
-      return true;
-    };
-
-    if (!checkSupport()) {
-      const handleResize = () => checkSupport();
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }
+    setIsSupported(true);
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -59,6 +43,28 @@ export function PuppyCursor() {
       canvas.height = window.innerHeight * dpr;
     };
     resize();
+
+    // Helper to stamp a cute paw print at (x, y)
+    const stampPaw = (x: number, y: number, customAngle?: number) => {
+      const angle =
+        customAngle !== undefined
+          ? customAngle
+          : (Math.random() - 0.5) * 0.6 - Math.PI / 14;
+
+      prints.push({
+        x,
+        y,
+        angle,
+        born: performance.now(),
+      });
+
+      if (prints.length > 28) prints.shift();
+
+      if (!isLoopActive) {
+        isLoopActive = true;
+        animId = requestAnimationFrame(render);
+      }
+    };
 
     // Canvas render loop for fading brown paw footsteps
     const render = (now: number) => {
@@ -88,8 +94,10 @@ export function PuppyCursor() {
       }
     };
 
-    // Track mouse position to stamp footprint trail
+    // Track mouse position to stamp footprint trail (laptop/desktop)
     const onPointerMove = (e: PointerEvent | MouseEvent) => {
+      if ("pointerType" in e && e.pointerType === "touch") return; // handled by touch
+
       const x = e.clientX;
       const y = e.clientY;
 
@@ -110,32 +118,30 @@ export function PuppyCursor() {
         stepSign = -stepSign;
         const offset = 8 * stepSign;
 
-        prints.push({
-          x: x + Math.cos(angle) * offset,
-          y: y + Math.sin(angle) * offset,
-          angle,
-          born: performance.now(),
-        });
-
-        if (prints.length > 24) prints.shift();
-
-        if (!isLoopActive) {
-          isLoopActive = true;
-          animId = requestAnimationFrame(render);
-        }
+        stampPaw(x + Math.cos(angle) * offset, y + Math.sin(angle) * offset, angle);
       }
 
       lastX = x;
       lastY = y;
     };
 
+    // Touch tap support for mobile phones & tablets
+    const onTouchStart = (e: TouchEvent) => {
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        const t = e.changedTouches[i];
+        stampPaw(t.clientX, t.clientY);
+      }
+    };
+
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("mousemove", onPointerMove, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("resize", resize);
 
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("mousemove", onPointerMove);
+      window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animId);
     };

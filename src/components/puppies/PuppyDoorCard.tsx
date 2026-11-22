@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Puppy } from "@/types/puppy";
@@ -29,7 +29,41 @@ export function PuppyDoorCard({
   priority = false,
   onNavigate,
 }: PuppyDoorCardProps) {
+  const cardRef = useRef<HTMLLIElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const [isTouchToggled, setIsTouchToggled] = useState<boolean | null>(null);
+
+  // Automatically swing doors open on mobile / touch when scrolled into view
+  useEffect(() => {
+    if (!cardRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Slight stagger between columns
+          const staggerMs = (index % 2) * 120;
+          const timer = setTimeout(() => {
+            setIsInView(true);
+          }, staggerMs);
+          return () => clearTimeout(timer);
+        } else {
+          setIsInView(false);
+          setIsTouchToggled(null);
+        }
+      },
+      {
+        rootMargin: "0px 0px -10% 0px",
+        threshold: 0.2,
+      }
+    );
+
+    observer.observe(cardRef.current);
+    return () => observer.disconnect();
+  }, [index]);
+
+  const isOpen =
+    isTouchToggled !== null ? isTouchToggled : isHovered || isInView;
 
   const doorColor = DOOR_LEAF_COLORS[index % DOOR_LEAF_COLORS.length];
   const hasVideo = puppy.media?.some((m) => m.kind === "video");
@@ -39,19 +73,25 @@ export function PuppyDoorCard({
     ? `${puppy.breed}, ${puppy.genderLabel.toLowerCase()}, ${puppy.age}`
     : `${puppy.genderLabel.toLowerCase()}, ${puppy.age}`;
 
+  const toggleDoorTouch = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsTouchToggled((prev) => (prev === null ? !isOpen : !prev));
+  };
+
   return (
     <li
+      ref={cardRef}
       data-mascot-slot={index === 0 ? "doors-bottom-left" : undefined}
       className="tp-door group relative list-none select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={() => setIsHovered((prev) => !prev)}
     >
       <Link
         href={`/puppies/${puppy.slug}`}
         onClick={onNavigate}
         className={`tp-door__link block rounded-2xl focus:outline-none transition-transform duration-300 ${
-          isHovered ? "-translate-y-2" : ""
+          isOpen ? "-translate-y-2" : ""
         }`}
       >
         {/* Puppy Plate: Name in bold serif + small detail line below */}
@@ -81,22 +121,24 @@ export function PuppyDoorCard({
               priority={priority}
               sizes="(min-width: 1024px) 16rem, (min-width: 640px) 40vw, 85vw"
               className={`object-cover transition-transform duration-500 ease-out ${
-                isHovered ? "scale-108" : "scale-100"
+                isOpen ? "scale-108" : "scale-100"
               }`}
             />
             <span className="absolute inset-0 bg-gradient-to-t from-[#2A1710]/40 via-transparent to-transparent pointer-events-none" />
           </span>
 
-          {/* 3D Swinging Door Leaf - CLOSED by default, OPENS ON CURSOR HOVER */}
+          {/* 3D Swinging Door Leaf - OPENS ON HOVER (DESKTOP) & IN-VIEW SCROLL / TAP (MOBILE) */}
           <span
             aria-hidden="true"
-            className="tp-door__way absolute inset-0 rounded-t-full overflow-hidden pointer-events-none"
+            className="tp-door__way absolute inset-0 rounded-t-full overflow-hidden"
           >
             <span
-              className="tp-door__leaf absolute inset-y-0 left-0 w-full origin-left rounded-t-full border-r-3 border-[#2A1710] shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.85,0.25,1)]"
+              onClick={toggleDoorTouch}
+              className="tp-door__leaf absolute inset-y-0 left-0 w-full origin-left rounded-t-full border-r-3 border-[#2A1710] shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.2,0.85,0.25,1)] cursor-pointer"
               style={{
                 backgroundColor: doorColor,
-                transform: isHovered ? "rotateY(-78deg)" : "rotateY(0deg)",
+                transform: isOpen ? "rotateY(-78deg)" : "rotateY(0deg)",
+                WebkitTransform: isOpen ? "rotateY(-78deg)" : "rotateY(0deg)",
                 backgroundImage:
                   "repeating-linear-gradient(90deg, transparent 0, transparent 24px, rgba(42,23,16,0.28) 24px, rgba(42,23,16,0.32) 26px), linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 40%, rgba(0,0,0,0.22) 100%)",
               }}

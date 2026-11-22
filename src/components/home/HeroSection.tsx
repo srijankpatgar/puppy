@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
@@ -27,15 +27,15 @@ export const HERO_ARCH_LEFT: HeroArchItem[] = [
     widthClass: "w-20 sm:w-26 lg:w-30",
     visibilityClass: "hidden lg:flex",
   },
-  // 1. Left Middle (tall, ~190-230px desktop)
+  // 1. Left Middle (tall, ~190-230px desktop, visible on mobile)
   {
     name: "Teddy & Bella",
     breed: "Maltipoo & Cavapoo",
     slug: "maltipoo-cavapoo-male",
     image: "/media/dI8Jv0KRTiLJ/d2d7e5375b/27b888_7d940ce5701f48d98327e4a242b53ac4-mv2.jpg",
-    heightClass: "h-[165px] sm:h-[195px] lg:h-[225px]",
-    widthClass: "w-24 sm:w-30 lg:w-36",
-    visibilityClass: "hidden sm:flex",
+    heightClass: "h-[135px] sm:h-[195px] lg:h-[225px]",
+    widthClass: "w-16 sm:w-30 lg:w-36",
+    visibilityClass: "flex",
   },
   // 2. Left Center (medium, ~140-175px desktop, visible on mobile)
   {
@@ -43,8 +43,8 @@ export const HERO_ARCH_LEFT: HeroArchItem[] = [
     breed: "Korean Teacup Poodle",
     slug: "korean-teacup-poodle-female",
     image: "/media/HJgL4rRnmReV/533701358f/27b888_082e47dfd8144423a96dc70d966fa5b2-mv2.jpg",
-    heightClass: "h-[130px] sm:h-[155px] lg:h-[175px]",
-    widthClass: "w-22 sm:w-28 lg:w-32",
+    heightClass: "h-[120px] sm:h-[155px] lg:h-[175px]",
+    widthClass: "w-16 sm:w-28 lg:w-32",
     visibilityClass: "flex",
   },
 ];
@@ -56,19 +56,19 @@ export const HERO_ARCH_RIGHT: HeroArchItem[] = [
     breed: "Korean Teacup Maltipoo",
     slug: "korean-teacup-maltipoo-female",
     image: "/media/gAaGwoGej2g6/5523e884dd/b942a5_50f0ae67c9ff437d911597d52a9e63b3-mv2.jpg",
-    heightClass: "h-[145px] sm:h-[170px] lg:h-[195px]",
-    widthClass: "w-24 sm:w-28 lg:w-34",
+    heightClass: "h-[125px] sm:h-[170px] lg:h-[195px]",
+    widthClass: "w-16 sm:w-28 lg:w-34",
     visibilityClass: "flex",
   },
-  // 4. Right Middle (tall, ~190-240px desktop)
+  // 4. Right Middle (tall, ~190-240px desktop, visible on mobile)
   {
     name: "Oreo",
     breed: "Shih Tzu",
     slug: "shitzu-female",
     image: "/media/qNrTCSrsYyzY/168fa8c4ff/b942a5_eb14616c76c24da89afe7fa3b7d7ae6a-mv2.jpeg",
-    heightClass: "h-[175px] sm:h-[205px] lg:h-[235px]",
-    widthClass: "w-26 sm:w-32 lg:w-38",
-    visibilityClass: "hidden sm:flex",
+    heightClass: "h-[140px] sm:h-[205px] lg:h-[235px]",
+    widthClass: "w-16 sm:w-32 lg:w-38",
+    visibilityClass: "flex",
   },
   // 5. Far Right (medium-small, ~110-140px desktop)
   {
@@ -94,6 +94,30 @@ export function HeroSection({
   onSelectArch,
 }: HeroSectionProps = {}) {
   const [hoveredSlug, setHoveredSlug] = useState<string | null>("korean-teacup-maltipoo-female");
+
+  // On touch / mobile screens where there is no cursor hover, cycle active arch every 3.5s
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isTouch =
+      window.matchMedia("(hover: none)").matches || window.innerWidth < 768;
+
+    if (!isTouch) return;
+
+    const visibleSlugs = [
+      "maltipoo-cavapoo-male",
+      "korean-teacup-poodle-female",
+      "korean-teacup-maltipoo-female",
+      "shitzu-female",
+    ];
+
+    let currentIdx = 2;
+    const interval = setInterval(() => {
+      currentIdx = (currentIdx + 1) % visibleSlugs.length;
+      setHoveredSlug(visibleSlugs[currentIdx]);
+    }, 3200);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="relative overflow-hidden min-h-[calc(100svh-5rem)] flex flex-col justify-between items-center bg-[#FBF3E4] text-center select-none pt-4 sm:pt-7 md:pt-9">
@@ -191,7 +215,9 @@ export function HeroSection({
                 {/* Arched Photo Window */}
                 <Link
                   href={`/puppies/${arch.slug}`}
-                  className={`relative ${arch.widthClass} ${arch.heightClass} rounded-t-full border-2 border-[#2A1710] bg-[#3B2215] overflow-hidden shadow-sm transition-transform duration-300 ease-out hover:-translate-y-3.5 block cursor-pointer`}
+                  className={`relative ${arch.widthClass} ${arch.heightClass} rounded-t-full border-2 border-[#2A1710] bg-[#3B2215] overflow-hidden shadow-sm transition-transform duration-300 ease-out hover:-translate-y-3.5 ${
+                    isHovered ? "-translate-y-2.5 sm:-translate-y-3.5 shadow-md" : ""
+                  } block cursor-pointer`}
                 >
                   <Image
                     src={arch.image}
@@ -249,7 +275,9 @@ export function HeroSection({
                 {/* Arched Photo Window */}
                 <Link
                   href={`/puppies/${arch.slug}`}
-                  className={`relative ${arch.widthClass} ${arch.heightClass} rounded-t-full border-2 border-[#2A1710] bg-[#3B2215] overflow-hidden shadow-sm transition-transform duration-300 ease-out hover:-translate-y-3.5 block cursor-pointer`}
+                  className={`relative ${arch.widthClass} ${arch.heightClass} rounded-t-full border-2 border-[#2A1710] bg-[#3B2215] overflow-hidden shadow-sm transition-transform duration-300 ease-out hover:-translate-y-3.5 ${
+                    isHovered ? "-translate-y-2.5 sm:-translate-y-3.5 shadow-md" : ""
+                  } block cursor-pointer`}
                 >
                   <Image
                     src={arch.image}

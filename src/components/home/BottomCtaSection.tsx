@@ -50,6 +50,24 @@ export function BottomCtaSection() {
             });
           },
         });
+
+        // Mobile IntersectionObserver fallback to guarantee door opens smoothly on touch scroll
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              setDoorOpen(true);
+              if (doorLeafRef.current) {
+                gsap.to(doorLeafRef.current, {
+                  rotateY: -75,
+                  duration: 0.45,
+                  ease: "power2.out",
+                });
+              }
+            }
+          },
+          { threshold: 0.25 }
+        );
+        observer.observe(porchRef.current);
       }
     }, sectionRef);
 
@@ -116,7 +134,18 @@ export function BottomCtaSection() {
             {/* Left Door Leaf (Hinged on left, opens 0.4s to rotateY -75deg) */}
             <div
               ref={doorLeafRef}
-              className="absolute inset-0 origin-left border-r border-[#1A0D08] z-20 shadow-2xl"
+              onClick={() => {
+                const nextState = !doorOpen;
+                setDoorOpen(nextState);
+                if (doorLeafRef.current) {
+                  gsap.to(doorLeafRef.current, {
+                    rotateY: nextState ? -75 : 0,
+                    duration: 0.4,
+                    ease: "power2.out",
+                  });
+                }
+              }}
+              className="absolute inset-0 origin-left border-r border-[#1A0D08] z-20 shadow-2xl cursor-pointer"
               style={{
                 backgroundColor: "#A8481C",
                 backgroundImage:
