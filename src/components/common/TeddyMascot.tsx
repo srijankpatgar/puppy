@@ -17,36 +17,16 @@ export function TeddyMascot({
   speechBubble,
   onClick,
 }: TeddyMascotProps) {
-  const [isBlinking, setIsBlinking] = useState(false);
   const [earWiggle, setEarWiggle] = useState(false);
 
-  // Natural blinking: random 3-6 s interval, 150 ms blink.
-  // Respects prefers-reduced-motion (no blinking at all).
+  // Ear wiggle loop every ~4.2s (blinking is handled via CSS .mascot-eye)
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) return; // Skip blink for reduced-motion users
-
-    let blinkTimeout: ReturnType<typeof setTimeout>;
-    const scheduleBlink = () => {
-      const delay = 3000 + Math.random() * 3000; // 3-6 s
-      blinkTimeout = setTimeout(() => {
-        setIsBlinking(true);
-        setTimeout(() => setIsBlinking(false), 150); // 150 ms blink
-        scheduleBlink(); // schedule next
-      }, delay);
-    };
-    scheduleBlink();
-
-    // Ear wiggle every ~4.2 s (unchanged)
     const earTimer = setInterval(() => {
       setEarWiggle(true);
       setTimeout(() => setEarWiggle(false), 550);
     }, 4200);
 
-    return () => {
-      clearTimeout(blinkTimeout);
-      clearInterval(earTimer);
-    };
+    return () => clearInterval(earTimer);
   }, []);
 
   return (
@@ -131,25 +111,21 @@ export function TeddyMascot({
           <circle cx="75" cy="106" r="9" fill="#FFAAA6" opacity="0.85" />
           <circle cx="145" cy="106" r="9" fill="#FFAAA6" opacity="0.85" />
 
-          {/* Big Kawaii Eyes: Blinking vs Shiny Sparkle */}
-          {isBlinking ? (
-            <g stroke="#2A1710" strokeWidth="4" strokeLinecap="round" fill="none">
-              <path d="M 82 90 Q 92 98 102 90" />
-              <path d="M 118 90 Q 128 98 138 90" />
-            </g>
-          ) : (
-            <g>
-              {/* Outer Dark Iris */}
+          {/* Big Kawaii Eyes: CSS-animated Blinking via .mascot-eye */}
+          <g>
+            {/* Left Eye */}
+            <g className="mascot-eye mascot-eye-left">
               <ellipse cx="92" cy="88" rx="8.5" ry="9.5" fill="#2A1710" />
-              <ellipse cx="128" cy="88" rx="8.5" ry="9.5" fill="#2A1710" />
-              {/* Primary Sparkle */}
               <circle cx="89" cy="84" r="3.2" fill="#FFFFFF" />
-              <circle cx="125" cy="84" r="3.2" fill="#FFFFFF" />
-              {/* Secondary Sparkle */}
               <circle cx="95" cy="91" r="1.5" fill="#FFFFFF" />
+            </g>
+            {/* Right Eye */}
+            <g className="mascot-eye mascot-eye-right">
+              <ellipse cx="128" cy="88" rx="8.5" ry="9.5" fill="#2A1710" />
+              <circle cx="125" cy="84" r="3.2" fill="#FFFFFF" />
               <circle cx="131" cy="91" r="1.5" fill="#FFFFFF" />
             </g>
-          )}
+          </g>
 
           {/* Black Cute Nose & Smile */}
           <path
@@ -278,20 +254,17 @@ export function TeddyMascot({
           <ellipse cx="144" cy="86" rx="7" ry="5.5" fill="#FFAAA6" opacity="0.85" />
           <ellipse cx="196" cy="86" rx="7" ry="5.5" fill="#FFAAA6" opacity="0.85" />
 
-          {/* Blinking Eyes */}
-          {isBlinking ? (
-            <g stroke="#2A1710" strokeWidth="3.2" strokeLinecap="round" fill="none">
-              <path d="M 150 74 Q 156 80 162 74" />
-              <path d="M 178 74 Q 184 80 190 74" />
-            </g>
-          ) : (
-            <g>
+          {/* Blinking Eyes via CSS .mascot-eye */}
+          <g>
+            <g className="mascot-eye mascot-eye-left">
               <ellipse cx="156" cy="72" rx="6" ry="7" fill="#2A1710" />
-              <ellipse cx="184" cy="72" rx="6" ry="7" fill="#2A1710" />
               <circle cx="154" cy="69" r="2.2" fill="#FFFFFF" />
+            </g>
+            <g className="mascot-eye mascot-eye-right">
+              <ellipse cx="184" cy="72" rx="6" ry="7" fill="#2A1710" />
               <circle cx="182" cy="69" r="2.2" fill="#FFFFFF" />
             </g>
-          )}
+          </g>
 
           {/* Nose & Smile */}
           <ellipse cx="170" cy="86" rx="6" ry="4" fill="#2A1710" />
@@ -362,20 +335,17 @@ export function TeddyMascot({
             <ellipse cx="78" cy="97" rx="9" ry="7" fill="#FFAAA6" opacity="0.85" />
             <ellipse cx="142" cy="97" rx="9" ry="7" fill="#FFAAA6" opacity="0.85" />
 
-            {/* Blinking Eyes */}
-            {isBlinking ? (
-              <g stroke="#2A1710" strokeWidth="3.8" strokeLinecap="round" fill="none">
-                <path d="M 86 82 Q 94 89 102 82" />
-                <path d="M 118 82 Q 126 89 134 82" />
-              </g>
-            ) : (
-              <g>
+            {/* Blinking Eyes via CSS .mascot-eye */}
+            <g>
+              <g className="mascot-eye mascot-eye-left">
                 <ellipse cx="94" cy="80" rx="7.5" ry="8.5" fill="#2A1710" />
-                <ellipse cx="126" cy="80" rx="7.5" ry="8.5" fill="#2A1710" />
                 <circle cx="91.5" cy="77" r="2.8" fill="#FFFFFF" />
+              </g>
+              <g className="mascot-eye mascot-eye-right">
+                <ellipse cx="126" cy="80" rx="7.5" ry="8.5" fill="#2A1710" />
                 <circle cx="123.5" cy="77" r="2.8" fill="#FFFFFF" />
               </g>
-            )}
+            </g>
 
             {/* Nose & Smile */}
             <ellipse cx="110" cy="95" rx="7" ry="5" fill="#2A1710" />
