@@ -9,20 +9,12 @@ import { PuppyJourney } from "@/components/home/PuppyJourney";
 import { HappyFamiliesSection } from "@/components/home/HappyFamiliesSection";
 import { FaqPreviewSection } from "@/components/home/FaqPreviewSection";
 import { BottomCtaSection } from "@/components/home/BottomCtaSection";
-import { ContinuousTeddyMascot } from "@/components/common/ContinuousTeddyMascot";
 
 export default function HomePage() {
   const [activeArchIndex, setActiveArchIndex] = useState(2); // Center arch default
 
   return (
     <main className="flex-1 flex flex-col overflow-x-hidden relative">
-      {/* THE MASCOT ("Teddy") - ONE CONTINUOUS CHARACTER */}
-      <ContinuousTeddyMascot
-        heroActiveArch={activeArchIndex}
-        onSelectHeroArch={setActiveArchIndex}
-        puppyBreeds={HERO_ARCH_PUPPIES}
-      />
-
       {/* B) Hero with Headline, CTAs, Full-width Arch Strip, & Center Mascot */}
       <HeroSection
         activeArchIndex={activeArchIndex}

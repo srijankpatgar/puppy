@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Puppy } from "@/types/puppy";
 import { Video } from "lucide-react";
+import { TeddyMascot } from "@/components/common/TeddyMascot";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -41,6 +42,11 @@ export function PuppyDoorCard({
 
   const doorColor = DOOR_LEAF_COLORS[index % DOOR_LEAF_COLORS.length];
   const hasVideo = puppy.media?.some((m) => m.kind === "video");
+
+  const displayTitle = puppy.name || puppy.displayName || puppy.breed;
+  const displaySubtitle = puppy.name
+    ? `${puppy.breed}, ${puppy.genderLabel.toLowerCase()}, ${puppy.age}`
+    : `${puppy.genderLabel.toLowerCase()}, ${puppy.age}`;
 
   // As each card enters: leaf swings open (0 to -70deg, spring ease, 60ms stagger) while photo scales 1.08 to 1
   useEffect(() => {
@@ -104,12 +110,10 @@ export function PuppyDoorCard({
         {/* Puppy Plate: Name in bold serif + small detail line below */}
         <span className="tp-door__plate block text-center mb-2.5">
           <span className="font-display font-extrabold text-xl sm:text-2xl text-[#2A1710] group-hover:text-[#A8481C] transition-colors block">
-            {puppy.name}
+            {displayTitle}
           </span>
           <span className="tp-door__meta flex items-center justify-center gap-1.5 text-[#5A2E14]/80 text-xs sm:text-sm font-semibold mt-0.5">
-            <span>
-              {puppy.breed}, {puppy.genderLabel.toLowerCase()}, {puppy.age}
-            </span>
+            <span>{displaySubtitle}</span>
             {hasVideo && (
               <span className="inline-flex items-center gap-0.5 text-[#A8481C] font-bold">
                 <Video className="size-3.5" />
@@ -128,7 +132,7 @@ export function PuppyDoorCard({
           >
             <Image
               src={puppy.cover.url}
-              alt={puppy.cover.alt || `${puppy.name}, ${puppy.breed}`}
+              alt={puppy.cover.alt || `${displayTitle}, ${puppy.breed}`}
               fill
               priority={priority}
               sizes="(min-width: 1024px) 16rem, (min-width: 640px) 40vw, 85vw"
@@ -149,6 +153,13 @@ export function PuppyDoorCard({
                   "repeating-linear-gradient(90deg, transparent 0, transparent 22px, rgba(42,23,16,0.3) 22px, rgba(42,23,16,0.35) 24px), linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.25) 100%)",
               }}
             >
+              {/* Engraved Paw Print on door leaf */}
+              <span className="absolute left-3.5 top-1/3 -translate-y-1/2 opacity-30 text-[#FFF6E5]">
+                <svg className="size-5 fill-current" viewBox="0 0 64 64">
+                  <path d="M32 30.5c-7.6 0-15.6 8.3-15.6 15.5 0 5.4 4.2 8.3 9.2 8.3 2.6 0 4.5-1.1 6.4-1.1s3.8 1.1 6.4 1.1c5 0 9.2-2.9 9.2-8.3 0-7.2-8-15.5-15.6-15.5zM19.28 26.71C21.07 30.08 20.42 33.92 17.84 35.29C15.25 36.67 11.71 35.05 9.92 31.69C8.13 28.32 8.78 24.48 11.36 23.11C13.95 21.73 17.49 23.35 19.28 26.71ZM29.62 15.64C30.32 19.62 28.46 23.26 25.47 23.79C22.48 24.32 19.48 21.53 18.78 17.56C18.08 13.58 19.94 9.94 22.93 9.41C25.92 8.88 28.92 11.67 29.62 15.64ZM45.22 17.56C44.52 21.53 41.52 24.32 38.53 23.79C35.54 23.26 33.68 19.62 34.38 15.64C35.08 11.67 38.08 8.88 41.07 9.41C44.06 9.94 45.92 13.58 45.22 17.56ZM54.08 31.69C52.29 35.05 48.75 36.67 46.16 35.29C43.58 33.92 42.93 30.08 44.72 26.71C46.51 23.35 50.05 21.73 52.64 23.11C55.22 24.48 55.87 28.32 54.08 31.69Z" />
+                </svg>
+              </span>
+
               {/* Golden Brass Knob */}
               <span className="absolute right-4 top-1/2 -translate-y-1/2 size-3.5 rounded-full bg-gradient-to-br from-[#FFE4A0] via-[#F8D08C] to-[#C27D2E] border border-[#2A1710] shadow-md" />
             </span>
@@ -163,6 +174,13 @@ export function PuppyDoorCard({
 
           {/* Thick Brown Base threshold step */}
           <span className="absolute -bottom-2 -inset-x-2 h-2.5 rounded-sm bg-[#5A2E14] border-2 border-[#2A1710] shadow-sm" />
+
+          {/* Mascot peeking at bottom-left corner of first door (matches reference video) */}
+          {index === 0 && (
+            <div className="absolute -bottom-7 -left-5 z-30 pointer-events-none w-20 sm:w-26">
+              <TeddyMascot pose="head-peek" />
+            </div>
+          )}
         </span>
       </Link>
     </li>

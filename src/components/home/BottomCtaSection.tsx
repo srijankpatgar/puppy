@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { MessageCircle, MapPin } from "lucide-react";
+import { TeddyMascot } from "@/components/common/TeddyMascot";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -159,6 +160,11 @@ export function BottomCtaSection() {
               <ellipse cx="18" cy="22" rx="10" ry="7" fill="#3D8B53" stroke="#1A0D08" strokeWidth="1.5" />
               <ellipse cx="32" cy="22" rx="10" ry="7" fill="#3D8B53" stroke="#1A0D08" strokeWidth="1.5" />
             </svg>
+          </div>
+
+          {/* Mascot Sitting at bottom-left of porch (matches reference video) */}
+          <div className="absolute -bottom-2 -left-6 sm:left-2 z-30 pointer-events-none w-24 sm:w-32">
+            <TeddyMascot pose="sitting" />
           </div>
         </div>
 

@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CloudDivider } from "@/components/common/CloudDivider";
+import { TeddyMascot } from "@/components/common/TeddyMascot";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
@@ -305,7 +306,7 @@ export function ImportedPlaneSection() {
           </svg>
         </div>
 
-        {/* Copy + Button "See imported puppies" with mascot slot anchor */}
+        {/* Copy + Button "See imported puppies" + Mascot (matches reference video) */}
         <div
           data-mascot-slot="imported-bottom-right"
           className="relative flex flex-col items-center gap-4 text-center max-w-xl mx-auto mb-6 z-10"
@@ -315,13 +316,18 @@ export function ImportedPlaneSection() {
             most reputable breeders and let us handle the import.
           </p>
 
-          <Link
-            href="/puppies?origin=imported"
-            className="btn-chunky py-3.5 px-8 text-sm sm:text-base shadow-[0_5px_0_#5A2E14] flex items-center justify-center gap-2"
-          >
-            <span>See imported puppies</span>
-            <ArrowRight className="size-4" />
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/puppies?origin=imported"
+              className="btn-chunky py-3.5 px-8 text-sm sm:text-base shadow-[0_5px_0_#5A2E14] flex items-center justify-center gap-2"
+            >
+              <span>See imported puppies</span>
+              <ArrowRight className="size-4" />
+            </Link>
+            <div className="w-20 sm:w-26 shrink-0">
+              <TeddyMascot pose="sitting" />
+            </div>
+          </div>
         </div>
       </div>
 

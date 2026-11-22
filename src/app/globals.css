@@ -38,33 +38,29 @@ body {
 /* Custom Brown Dog Paw Cursor Rules */
 @media (hover: hover) and (pointer: fine) {
   html,
-  body {
-    cursor: url(/cursor/paw.svg) 9 6, auto;
+  body,
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
   }
-  :is(
-    a,
-    button,
-    summary,
-    label[for],
-    [role="button"],
-    [role="tab"],
-    select,
-    input[type="checkbox"],
-    input[type="radio"],
-    input[type="submit"],
-    [data-interactive="true"],
-    .tp-door__link,
-    .btn,
-    .cursor-pointer
-  ) {
-    cursor: url(/cursor/paw-press.svg) 9 6, pointer !important;
+}
+
+@keyframes tailWag {
+  0% {
+    transform: rotate(-18deg);
   }
-  :is(
-    input:not([type="checkbox"], [type="radio"], [type="submit"], [type="range"]),
-    textarea,
-    [contenteditable="true"]
-  ) {
-    cursor: text !important;
+  100% {
+    transform: rotate(18deg);
+  }
+}
+
+@keyframes basketBob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
   }
 }
 

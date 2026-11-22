@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import { MessageCircle } from "lucide-react";
 import { CloudDivider } from "@/components/common/CloudDivider";
+import { TeddyMascot } from "@/components/common/TeddyMascot";
 
 export const HERO_ARCH_PUPPIES = [
   {
@@ -54,6 +56,15 @@ export function HeroSection({
   activeArchIndex,
   onSelectArch,
 }: HeroSectionProps) {
+  // Hero arch idle patrol loop every ~3.2 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      onSelectArch((activeArchIndex + 1) % HERO_ARCH_PUPPIES.length);
+    }, 3200);
+
+    return () => clearInterval(timer);
+  }, [activeArchIndex, onSelectArch]);
+
   return (
     <section className="relative overflow-hidden pt-12 pb-16 sm:pt-16 sm:pb-24 bg-quilt-cream text-center select-none">
       <div className="gutter flex flex-col items-center">
@@ -117,6 +128,15 @@ export function HeroSection({
                     onMouseEnter={() => onSelectArch(idx)}
                     onTouchStart={() => onSelectArch(idx)}
                   >
+                    {/* Tilted Breed Pill Tag springing in above active arch */}
+                    {isUnderTeddy && (
+                      <div className="absolute -top-11 left-1/2 -translate-x-1/2 z-30 pointer-events-none whitespace-nowrap animate-in fade-in zoom-in-95 duration-200">
+                        <div className="bg-[#FFFFFF] text-[#2A1710] font-scrawl text-xs sm:text-sm font-bold px-3.5 py-1 rounded-full border-[1.5px] border-[#2A1710] shadow-md transform -rotate-4">
+                          {pup.breed}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Arch-Shaped Photo Window */}
                     <Link
                       href={`/puppies/${pup.slug}`}
@@ -145,6 +165,11 @@ export function HeroSection({
                   </div>
                 );
               })}
+            </div>
+
+            {/* Center Mascot Peeking Over Scalloped Cloud Edge (matches reference video) */}
+            <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 z-20 pointer-events-none w-24 sm:w-32">
+              <TeddyMascot pose="head-peek" />
             </div>
           </div>
 

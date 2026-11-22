@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { siteConfig } from "@/config/site";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
+import { TeddyMascot } from "@/components/common/TeddyMascot";
 
 export function SiteFooter() {
   return (
@@ -103,12 +104,14 @@ export function SiteFooter() {
           </div>
         </div>
 
-        {/* WICKER BASKET SLOT ANCHOR (Final Element) */}
+        {/* WICKER BASKET WITH PUPPY INSIDE (Matches reference video) */}
         <div
           data-mascot-slot="footer-basket"
-          className="mt-14 flex flex-col items-center justify-center min-h-[140px]"
+          className="mt-14 flex flex-col items-center justify-center min-h-[160px]"
         >
-          {/* Visual slot placeholder in DOM */}
+          <div className="w-36 sm:w-44 mb-2">
+            <TeddyMascot pose="in-basket" />
+          </div>
           <div className="text-center font-scrawl text-xs text-[#F8D08C]/70">
             every puppy is family
           </div>

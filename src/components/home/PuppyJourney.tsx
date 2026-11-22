@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Play, Send, CheckCheck, Home } from "lucide-react";
 import { CloudDivider } from "@/components/common/CloudDivider";
+import { TeddyMascot } from "@/components/common/TeddyMascot";
 import { getWhatsAppUrl } from "@/lib/whatsapp";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -152,8 +153,8 @@ export function PuppyJourney() {
               </div>
             </div>
 
-            {/* "How it works" Outline Button */}
-            <div className="pt-2">
+            {/* "How it works" Outline Button + Mascot (matches reference video) */}
+            <div className="pt-2 flex items-center gap-4">
               <Link
                 href="/how-it-works"
                 className="btn-chunky-outline py-3 px-7 text-xs sm:text-sm shadow-[0_4px_0_#5A2E14] inline-flex items-center gap-2"
@@ -161,6 +162,9 @@ export function PuppyJourney() {
                 <span>How it works</span>
                 <ArrowRight className="size-4" />
               </Link>
+              <div className="w-22 sm:w-28 shrink-0">
+                <TeddyMascot pose="sitting" speechBubble="How it works" />
+              </div>
             </div>
           </div>
 

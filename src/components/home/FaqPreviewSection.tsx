@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, HelpCircle, ChevronDown } from "lucide-react";
 import faqData from "@/data/faq.json";
 import { CloudDivider } from "@/components/common/CloudDivider";
+import { TeddyMascot } from "@/components/common/TeddyMascot";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -100,15 +101,18 @@ export function FaqPreviewSection() {
             </h2>
           </div>
 
-          {/* Button: "Read all questions" (with mascot slot anchor) */}
-          <div data-mascot-slot="faq-bottom-right" className="relative">
+          {/* Button: "Read all questions" + Mascot Puppy (matches reference video) */}
+          <div data-mascot-slot="faq-bottom-right" className="flex items-center gap-3">
             <Link
               href="/faq"
-              className="inline-flex items-center gap-2 rounded-full bg-[#F8D08C] text-[#2A1710] font-extrabold text-xs sm:text-sm uppercase tracking-wider px-5 py-2.5 border-2 border-[#1A0D08] shadow-[0_3px_0_#1A0D08] hover:bg-white active:translate-y-0.5 active:shadow-[0_1px_0_#1A0D08] transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-full bg-[#F8D08C] text-[#2A1710] font-extrabold text-xs sm:text-sm uppercase tracking-wider px-5 py-2.5 border-2 border-[#1A0D08] shadow-[0_3px_0_#1A0D08] hover:bg-white active:translate-y-0.5 active:shadow-[0_1px_0_#1A0D08] transition-all cursor-pointer whitespace-nowrap"
             >
               <span>Read all questions</span>
               <ArrowRight className="size-4" />
             </Link>
+            <div className="w-20 sm:w-26 shrink-0">
+              <TeddyMascot pose="sitting" />
+            </div>
           </div>
         </div>
 

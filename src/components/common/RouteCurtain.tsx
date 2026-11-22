@@ -236,8 +236,11 @@ export function RouteCurtain() {
             </svg>
           </div>
 
-          {/* Note Under Runner: Handwritten "every puppy is family" */}
-          <div className="tp-curtain__note text-center">
+          {/* Note Under Runner: Handwritten "hey, just a min..." + "every puppy is family" */}
+          <div className="tp-curtain__note text-center space-y-1">
+            <p className="font-scrawl text-sm sm:text-base text-[#A8481C] font-semibold tracking-wide">
+              hey, just a min...
+            </p>
             <p className="font-scrawl text-lg sm:text-2xl text-[#5A2E14] font-bold">
               every puppy is family
             </p>

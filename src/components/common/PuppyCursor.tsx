@@ -15,7 +15,11 @@ interface PawPrint {
 
 export function PuppyCursor() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const cursorRef = useRef<HTMLDivElement | null>(null);
   const [isSupported, setIsSupported] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     // Only enable on desktop screens with a mouse / fine pointer
@@ -47,7 +51,7 @@ export function PuppyCursor() {
     };
     resize();
 
-    // Canvas render loop for fading brown paw prints
+    // Canvas render loop for fading brown paw footsteps
     const render = (now: number) => {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -55,16 +59,16 @@ export function PuppyCursor() {
       for (let i = prints.length - 1; i >= 0; i--) {
         const p = prints[i];
         const age = now - p.born;
-        if (age > 1000) {
+        if (age > 1200) {
           prints.splice(i, 1);
           continue;
         }
-        const fade = age < 600 ? 1 : 1 - (age - 600) / 400;
-        ctx.globalAlpha = 0.42 * fade * fade;
-        ctx.setTransform(0.26 * dpr, 0, 0, 0.26 * dpr, p.x * dpr, p.y * dpr);
+        const fade = age < 700 ? 1 : 1 - (age - 700) / 500;
+        ctx.globalAlpha = 0.38 * fade * fade;
+        ctx.setTransform(0.24 * dpr, 0, 0, 0.24 * dpr, p.x * dpr, p.y * dpr);
         ctx.rotate(p.angle);
         ctx.translate(-32, -34);
-        ctx.fillStyle = "#c2622b"; // Authentic brand warm toffee brown
+        ctx.fillStyle = "#A8481C"; // Authentic brand warm toffee brown
         ctx.fill(pawPath);
       }
 
@@ -75,35 +79,52 @@ export function PuppyCursor() {
       }
     };
 
-    // Track mouse position and drop footsteps as pointer walks
+    // Track mouse position with zero lag
     const onPointerMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
+      setIsVisible(true);
+
+      const x = e.clientX;
+      const y = e.clientY;
+
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      }
+
+      // Check if hovering interactive element
+      const target = e.target as HTMLElement | null;
+      if (target) {
+        const interactive = target.closest(
+          'a, button, [role="button"], input, select, textarea, .tp-door__link, .cursor-pointer'
+        );
+        setIsHovering(!!interactive);
+      }
 
       if (Number.isNaN(lastX)) {
-        lastX = e.clientX;
-        lastY = e.clientY;
+        lastX = x;
+        lastY = y;
         return;
       }
 
-      const dx = e.clientX - lastX;
-      const dy = e.clientY - lastY;
+      const dx = x - lastX;
+      const dy = y - lastY;
       distAccum += Math.hypot(dx, dy);
 
-      // Stamp a little paw step every 46 pixels of mouse movement
-      if (distAccum >= 46) {
+      // Stamp a subtle paw step every 48 pixels of movement
+      if (distAccum >= 48) {
         distAccum = 0;
         const angle = Math.atan2(dy, dx) + Math.PI / 2;
         stepSign = -stepSign;
-        const offset = 7 * stepSign;
+        const offset = 8 * stepSign;
 
         prints.push({
-          x: e.clientX + Math.cos(angle) * offset + 12,
-          y: e.clientY + Math.sin(angle) * offset + 14,
+          x: x + Math.cos(angle) * offset,
+          y: y + Math.sin(angle) * offset,
           angle,
           born: performance.now(),
         });
 
-        if (prints.length > 16) prints.shift();
+        if (prints.length > 20) prints.shift();
 
         if (!isLoopActive) {
           isLoopActive = true;
@@ -111,15 +132,28 @@ export function PuppyCursor() {
         }
       }
 
-      lastX = e.clientX;
-      lastY = e.clientY;
+      lastX = x;
+      lastY = y;
     };
 
+    const onMouseDown = () => setIsPressed(true);
+    const onMouseUp = () => setIsPressed(false);
+    const onMouseLeave = () => setIsVisible(false);
+    const onMouseEnter = () => setIsVisible(true);
+
     window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("mouseleave", onMouseLeave);
+    document.addEventListener("mouseenter", onMouseEnter);
     window.addEventListener("resize", resize);
 
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("mouseleave", onMouseLeave);
+      document.removeEventListener("mouseenter", onMouseEnter);
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animId);
     };
@@ -128,10 +162,50 @@ export function PuppyCursor() {
   if (!isSupported) return null;
 
   return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[70] size-full"
-    />
+    <>
+      {/* 1. Footprints Canvas Trail */}
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-[60] size-full"
+      />
+
+      {/* 2. Custom Brown Puppy Paw Cursor Element */}
+      <div
+        ref={cursorRef}
+        aria-hidden="true"
+        className={`pointer-events-none fixed top-0 left-0 z-[9999] transition-opacity duration-200 ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+        style={{
+          willChange: "transform",
+        }}
+      >
+        <div
+          className={`relative -top-3 -left-3 size-9 transition-transform duration-150 ease-out ${
+            isPressed
+              ? "scale-85"
+              : isHovering
+              ? "scale-125 -rotate-12"
+              : "scale-100 rotate-0"
+          }`}
+        >
+          {/* Paw Icon SVG */}
+          <svg
+            viewBox="0 0 64 64"
+            className="size-full drop-shadow-[0_2px_4px_rgba(42,23,14,0.35)]"
+          >
+            <path
+              transform="rotate(-18 32 34)"
+              fill={isPressed ? "#2A170E" : "#C2622B"}
+              stroke={isPressed ? "#F2BE6B" : "#2A170E"}
+              strokeWidth="3.4"
+              strokeLinejoin="round"
+              d={PAW_PATH_D}
+            />
+          </svg>
+        </div>
+      </div>
+    </>
   );
 }

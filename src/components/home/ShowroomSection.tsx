@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, MapPin } from "lucide-react";
 import { CloudDivider } from "@/components/common/CloudDivider";
+import { TeddyMascot } from "@/components/common/TeddyMascot";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -174,7 +175,7 @@ export function ShowroomSection() {
             </div>
           </div>
 
-          {/* Paragraph + "Meet local puppies" Button (with mascot slot anchor) */}
+          {/* Paragraph + "Meet local puppies" Button + Mascot Puppy (matches reference video) */}
           <div
             data-mascot-slot="twoways-bottom-right"
             className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
@@ -184,13 +185,18 @@ export function ShowroomSection() {
               puppies in our Downtown Dubai showroom before you decide.
             </p>
 
-            <Link
-              href="/puppies?origin=local"
-              className="w-full sm:w-auto btn-chunky py-3 px-6 text-xs sm:text-sm whitespace-nowrap shadow-[0_4px_0_#5A2E14] flex items-center justify-center gap-2"
-            >
-              <span>Meet local puppies</span>
-              <ArrowRight className="size-4" />
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/puppies?origin=local"
+                className="w-full sm:w-auto btn-chunky py-3 px-6 text-xs sm:text-sm whitespace-nowrap shadow-[0_4px_0_#5A2E14] flex items-center justify-center gap-2"
+              >
+                <span>Meet local puppies</span>
+                <ArrowRight className="size-4" />
+              </Link>
+              <div className="w-22 sm:w-28 shrink-0">
+                <TeddyMascot pose="sitting" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
