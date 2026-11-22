@@ -35,37 +35,41 @@ body {
   font-family: var(--font-sans);
 }
 
-/* ---- Dog Paw Cursor (mouse-only devices) ---- */
-@media (hover: hover) and (pointer: fine) {
+/* ---- Dog Paw Cursor ---- */
+@media (hover: hover), (pointer: fine), (any-pointer: fine) {
   html,
-  body {
+  body,
+  *,
+  *::before,
+  *::after {
     cursor: url('/cursors/paw.svg') 16 16, auto;
   }
 
   a,
+  a *,
   button,
+  button *,
   [role="button"],
+  [role="button"] *,
+  summary,
   .cursor-pointer,
+  .cursor-pointer *,
   .tp-door,
-  .tp-door__link {
-    cursor: url('/cursors/paw-hover.svg') 16 16, pointer;
+  .tp-door *,
+  .tp-door__link,
+  .tp-door__link * {
+    cursor: url('/cursors/paw-hover.svg') 16 16, pointer !important;
   }
 
   /* Form fields keep the normal text cursor */
   input,
+  input *,
+  textarea,
+  textarea *,
   select,
-  textarea {
-    cursor: text;
+  select * {
+    cursor: text !important;
   }
-}
-
-/* When rich custom cursor component is mounted on desktop, hide browser cursor */
-html.has-custom-cursor,
-html.has-custom-cursor body,
-html.has-custom-cursor *,
-html.has-custom-cursor *::before,
-html.has-custom-cursor *::after {
-  cursor: none !important;
 }
 
 @keyframes tailWag {

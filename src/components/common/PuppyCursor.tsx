@@ -15,18 +15,14 @@ interface PawPrint {
 
 export function PuppyCursor() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const cursorRef = useRef<HTMLDivElement | null>(null);
   const [isSupported, setIsSupported] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     // Enable on any screen width >= 640px or upon mouse movement
     if (typeof window === "undefined") return;
 
     const checkSupport = () => {
-      // Don't show on small mobile touchscreens (phones < 640px)
+      // Don't show canvas trail on small mobile screens
       if (window.innerWidth < 640) {
         setIsSupported(false);
         return false;
@@ -40,9 +36,6 @@ export function PuppyCursor() {
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
     }
-
-    // Add CSS class to hide browser cursor on desktop
-    document.documentElement.classList.add("has-custom-cursor");
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -95,26 +88,10 @@ export function PuppyCursor() {
       }
     };
 
-    // Track mouse position with zero lag
+    // Track mouse position to stamp footprint trail
     const onPointerMove = (e: PointerEvent | MouseEvent) => {
-      if ("pointerType" in e && e.pointerType === "touch") return;
-      setIsVisible(true);
-
       const x = e.clientX;
       const y = e.clientY;
-
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      }
-
-      // Check if hovering interactive element
-      const target = e.target as HTMLElement | null;
-      if (target) {
-        const interactive = target.closest(
-          'a, button, [role="button"], input, select, textarea, .tp-door, .tp-door__link, .cursor-pointer, [data-arch-slot]'
-        );
-        setIsHovering(!!interactive);
-      }
 
       if (Number.isNaN(lastX)) {
         lastX = x;
@@ -152,27 +129,13 @@ export function PuppyCursor() {
       lastY = y;
     };
 
-    const onMouseDown = () => setIsPressed(true);
-    const onMouseUp = () => setIsPressed(false);
-    const onMouseLeave = () => setIsVisible(false);
-    const onMouseEnter = () => setIsVisible(true);
-
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("mousemove", onPointerMove, { passive: true });
-    window.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mouseup", onMouseUp);
-    document.addEventListener("mouseleave", onMouseLeave);
-    document.addEventListener("mouseenter", onMouseEnter);
     window.addEventListener("resize", resize);
 
     return () => {
-      document.documentElement.classList.remove("has-custom-cursor");
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("mousemove", onPointerMove);
-      window.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mouseup", onMouseUp);
-      document.removeEventListener("mouseleave", onMouseLeave);
-      document.removeEventListener("mouseenter", onMouseEnter);
       window.removeEventListener("resize", resize);
       cancelAnimationFrame(animId);
     };
@@ -181,99 +144,11 @@ export function PuppyCursor() {
   if (!isSupported) return null;
 
   return (
-    <>
-      {/* 1. Footprints Canvas Trail */}
-      <canvas
-        ref={canvasRef}
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-[60] size-full"
-      />
-
-      {/* 2. Custom Brown Puppy Paw / Toe Cursor Element */}
-      <div
-        ref={cursorRef}
-        aria-hidden="true"
-        className={`pointer-events-none fixed top-0 left-0 z-[99999] transition-opacity duration-150 ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}
-        style={{
-          willChange: "transform",
-        }}
-      >
-        <div
-          className={`relative -top-4 -left-4 size-10 transition-transform duration-120 ease-out ${
-            isPressed
-              ? "scale-90"
-              : isHovering
-              ? "scale-125 -rotate-12"
-              : "scale-100 rotate-0"
-          }`}
-        >
-          {/* Detailed Brown Dog Foot with Skin/Peach Toe Beans */}
-          <svg
-            viewBox="0 0 64 64"
-            className="size-full drop-shadow-[0_2px_5px_rgba(42,23,14,0.45)]"
-          >
-            {/* Brown Dog Foot Base */}
-            <path
-              d="M 32 14 C 18 14 12 26 12 40 C 12 52 20 58 32 58 C 44 58 52 52 52 40 C 52 26 46 14 32 14 Z"
-              fill={isPressed ? "#5A2E14" : "#8E3F15"}
-              stroke="#2A1710"
-              strokeWidth="3.2"
-              strokeLinejoin="round"
-            />
-            {/* 4 Soft Skin/Peach Puppy Toe Beans */}
-            <ellipse
-              cx="18"
-              cy="26"
-              rx="5.5"
-              ry="7"
-              transform="rotate(-22 18 26)"
-              fill={isPressed ? "#FFE2BA" : "#F8D08C"}
-              stroke="#2A1710"
-              strokeWidth="2.4"
-            />
-            <ellipse
-              cx="27"
-              cy="18"
-              rx="6"
-              ry="7.5"
-              transform="rotate(-8 27 18)"
-              fill={isPressed ? "#FFE2BA" : "#F8D08C"}
-              stroke="#2A1710"
-              strokeWidth="2.4"
-            />
-            <ellipse
-              cx="37"
-              cy="18"
-              rx="6"
-              ry="7.5"
-              transform="rotate(8 37 18)"
-              fill={isPressed ? "#FFE2BA" : "#F8D08C"}
-              stroke="#2A1710"
-              strokeWidth="2.4"
-            />
-            <ellipse
-              cx="46"
-              cy="26"
-              rx="5.5"
-              ry="7"
-              transform="rotate(22 46 26)"
-              fill={isPressed ? "#FFE2BA" : "#F8D08C"}
-              stroke="#2A1710"
-              strokeWidth="2.4"
-            />
-            {/* Main Center Paw Pad (Heart/Trilobe Skin Tone) */}
-            <path
-              d="M 32 32 C 24 32 18 39 18 45 C 18 51 22 53 26 53 C 29 53 30.5 51 32 51 C 33.5 51 35 53 38 53 C 42 53 46 51 46 45 C 46 39 40 32 32 32 Z"
-              fill={isPressed ? "#FFE2BA" : "#F8D08C"}
-              stroke="#2A1710"
-              strokeWidth="2.6"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-      </div>
-    </>
+    /* Footprints Canvas Trail */
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-[60] size-full"
+    />
   );
 }
